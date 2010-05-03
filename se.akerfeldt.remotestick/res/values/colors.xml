@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<color name="selectedDevice">#DDFFFF99</color>
+
+<color name="device_bg">#AAFFFF99</color>
+<color name="highlightedDevice">#AA000000</color>
+<color name="bottomPanel">#AFAFAF</color>
+</resources>

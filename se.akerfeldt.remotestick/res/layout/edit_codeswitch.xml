@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/codeswitchLayout">
+	<EditText android:layout_height="wrap_content"
+		android:layout_marginLeft="10dp" android:layout_marginTop="15dp"
+		android:layout_width="fill_parent" android:layout_marginRight="10dp"
+		android:id="@+id/editName" android:hint="Name of device"
+		android:inputType="textImeMultiLine"></EditText>
+
+
+
+	<RelativeLayout android:layout_below="@+id/editName"
+		android:layout_height="wrap_content" android:layout_centerHorizontal="true"
+		android:layout_width="wrap_content" android:id="@+id/codeswitchParamLayout">
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:text="House"
+			android:id="@+id/codeswitchHouseLabel" android:layout_marginRight="100dp"></TextView>
+		<TextView android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true" android:layout_width="wrap_content"
+			android:layout_toRightOf="@+id/codeswitchHouseLabel" android:id="@+id/codeswitchUnitLabel"
+			android:text="Unit"></TextView>
+		<Spinner android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/spinnerHouse"
+			android:layout_marginRight="50dp" android:layout_below="@+id/codeswitchHouseLabel"></Spinner>
+		<Spinner android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/spinnerUnit"
+			android:layout_centerHorizontal="true" android:layout_below="@+id/codeswitchUnitLabel"
+			android:layout_toRightOf="@+id/spinnerHouse"></Spinner>
+
+	</RelativeLayout>
+
+
+
+	<RelativeLayout android:layout_height="wrap_content"
+		android:id="@+id/bottomRelativeLayout" android:layout_alignParentBottom="true"
+		android:layout_width="fill_parent" android:layout_centerHorizontal="true"
+		android:background="@color/bottomPanel">
+		<LinearLayout android:layout_height="wrap_content"
+			android:id="@+id/LinearLayout02" android:layout_centerHorizontal="true"
+			android:layout_width="fill_parent">
+			<Button android:layout_height="wrap_content" android:id="@+id/editTellstickDone"
+				android:text="Done" android:paddingLeft="15dp" android:textSize="12dp"
+				android:layout_width="wrap_content" android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp" android:layout_marginTop="5dp"
+				android:layout_marginRight="5dp" android:layout_weight="50" android:onClick="done"></Button>
+			<Button android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal" android:text="Cancel"
+				android:id="@+id/editTellstickCancel" android:layout_toRightOf="@+id/editTellstickDone"
+				android:textSize="12dp" android:layout_width="wrap_content"
+				android:layout_marginRight="10dp" android:layout_marginTop="5dp"
+				android:layout_marginBottom="5dp" android:layout_weight="50" android:onClick="cancel"></Button>
+		</LinearLayout>
+	</RelativeLayout>
+
+
+
+
+</RelativeLayout>

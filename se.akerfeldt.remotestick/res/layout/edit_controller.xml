@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="fill_parent"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/editTellstickLayout">
+	<EditText android:layout_height="wrap_content" android:id="@+id/editTellstickName"
+		android:hint="Name" android:layout_marginTop="10dp"
+		android:layout_width="fill_parent" android:layout_marginRight="20dp"
+		android:layout_marginLeft="20dp" android:inputType="textImeMultiLine"></EditText>
+	<EditText android:layout_below="@+id/editTellstickName"
+		android:layout_height="wrap_content" android:id="@+id/editTellstickUri"
+		android:hint="URI" android:layout_width="fill_parent"
+		android:layout_marginLeft="20dp" android:layout_marginRight="20dp"
+		android:layout_marginTop="15dp" android:inputType="textImeMultiLine"></EditText>
+	<EditText android:layout_below="@+id/editTellstickUri"
+		android:layout_height="wrap_content" android:id="@+id/editTellstickApiKey"
+		android:hint="API key" android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp" android:layout_width="fill_parent"
+		android:inputType="textImeMultiLine"></EditText>
+	<RelativeLayout android:layout_height="wrap_content"
+		android:id="@+id/bottomRelativeLayout" android:layout_alignParentBottom="true"
+		android:layout_width="fill_parent" android:layout_centerHorizontal="true"
+		android:background="@color/bottomPanel">
+		<LinearLayout android:layout_height="wrap_content"
+			android:id="@+id/LinearLayout02" android:layout_centerHorizontal="true"
+			android:layout_width="fill_parent">
+			<Button android:layout_height="wrap_content" android:id="@+id/editTellstickDone"
+				android:text="Done" android:paddingLeft="15dp" android:textSize="12dp"
+				android:layout_width="wrap_content" android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp" android:layout_marginTop="5dp"
+				android:layout_marginRight="5dp" android:layout_weight="50" android:onClick="done"></Button>
+			<Button android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal" android:text="Cancel"
+				android:id="@+id/editTellstickCancel" android:layout_toRightOf="@+id/editTellstickDone"
+				android:textSize="12dp" android:layout_width="wrap_content"
+				android:layout_marginRight="10dp" android:layout_marginTop="5dp"
+				android:layout_marginBottom="5dp" android:layout_weight="50" android:onClick="cancel"></Button>
+		</LinearLayout>
+	</RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">TellRemote</string>
+<string name="no_devices">Tellstick has no devices - Use the menu to add a device</string>
+<string name="new_device">New device</string>
+<string name="refresh">Refresh</string>
+<string name="name">Name</string>
+<string name="model">Model</string>
+<string name="protocol">Protocol</string>
+<string name="choose_type">Choose type</string>
+<string name="done">Done</string>
+<string name="cancel">Cancel</string>
+<string name="nexa_codeswitch">NEXA/codeswitch</string>
+<string name="nexa_selflearning_switch">NEXA/Selflearning switch</string>
+</resources>
