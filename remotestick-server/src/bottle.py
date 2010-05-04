@@ -87,6 +87,7 @@ import thread
 
 try:
     from urlparse import parse_qs
+    from urlparse import parse_header
 except ImportError: # pragma: no cover
     from cgi import parse_qs
 
@@ -368,6 +369,10 @@ class Request(threading.local):
             return max(0,int(self._environ.get('CONTENT_LENGTH', '0')))
         except ValueError:
             return 0
+
+    @property
+    def authorization(self):
+        return self._environ.get("HTTP_AUTHORIZATION", '')
 
     @property
     def GET(self):
