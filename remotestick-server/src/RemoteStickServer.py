@@ -125,7 +125,7 @@ def err_xml(request, msg):
 
 def authenticate(encoded_base64):
     print encoded_base64
-    if encoded_base64 == "Basic cGF0cmlrOnBhdHJpaw==":
+    if encoded_base64 == "Basic dGVzdDp0ZXN0":
         return True
     else:
         return False
