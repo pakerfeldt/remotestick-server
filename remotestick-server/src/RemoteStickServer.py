@@ -1,12 +1,7 @@
+#!/usr/bin/env python
+
 from bottle import route, run, response, request
-from ctypes import cdll, c_char_p, c_int
-from uuid import *
-
-api_keys = []
-api_keys.append(str(uuid4()))
-api_keys.append('520397fa-5357-4285-b37a-5dad54702a01')
-
-print api_keys
+from ctypes import cdll, c_char_p, util
 
 #Device methods
 TELLSTICK_TURNON = 1
@@ -60,7 +55,7 @@ TELLSTICK_DEVICE_EL2019 = 28
 #Protocol Ikea
 TELLSTICK_DEVICE_KOPPLA = 19
 
-ret = ctypes.util.find_library("TelldusCore")
+ret = util.find_library("TelldusCore")
 if ret == None:
     print "None"
 else:
@@ -76,42 +71,34 @@ libtelldus.tdGetErrorString.restype = c_char_p
 def errmsg(x):
     return {
         100: "API key could not be verified.",
-        101: "Name not supplied.",
-        102: "Model not supplied.",
-        103: "Protocol not supplied.",
-        110: "Malformed parameters.",
-        111: "No device removed."
+        101: "Unsupported format",
+        201: "Name not supplied.",
+        202: "Model not supplied.",
+        203: "Protocol not supplied.",
+        210: "Malformed parameters.",
+        211: "No device removed.",
+        300: "Telldus-core error"
     }[x]
-
-def err(code, msg=None):
-    if msg == None:
-        return "<error code=\"" + str(code) + "\">" + errmsg(code) + "</error>"
-    else:
-        return "<error code=\"" + str(code) + "\">" + msg + "</error>"
-
-def errxml(errors):
-    retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<errors>\n"
-    for error in errors:
-        retval += "\t" + error + "\n"
-    response.status = 501
-    return retval + "</errors>"
+   
+def err(format, responsecode, request, code, code_msg=None):
+    response.status = responsecode
+    if code_msg == None:
+        code_msg = errmsg(code)
     
-def ok(msg=None):
-    if msg != None:
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response code=\"0\">" + msg + "</response>"
+    if format == "xml":
+        return err_xml(request, code_msg)
     else:
-        return "<response code=\"0\">OK</response>"
+        return err_xml(request, code_msg)
 
-def verify_api_key(request):
-#    key = request.POST.get('apikey', '').strip()
-    key = None
-    if key == None:
-        key = request.GET.get('apikey', '').strip()
+def err_xml(request, msg):
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n\t<request>" + request + "</request>\n\t<error>" + msg + "</error>\n</hash>"
 
-    if key in api_keys:
-        return True, None
+def authenticate(encoded_base64):
+    print encoded_base64
+    if encoded_base64 == "Basic cGF0cmlrOnBhdHJpaw==":
+        return True
     else:
-        return False, "<errors>\n" + err(100) + "</errors>"
+        return False
 
 def read_device(identity):
     name = libtelldus.tdGetName(identity)
@@ -136,21 +123,25 @@ def read_device(identity):
     element += "</device>\n"
     return element
 
-@route('/')
-def index():
-    response.content_type = 'text/xml; charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+def pre_check(format, accepted_formats):
+    if format not in accepted_formats:
+        return False,  400, 101
+    
+    if not authenticate(request.authorization):
+        return False, 401, 100
+    
+    return True, None, None
 
-    return '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<result>Hello World!</result>'
+def set_content_type(format):
+    if format == "xml":
+        response.content_type = 'text/xml; charset=UTF-8'
 
-@route('/devices/?', method='GET')
-def devices():
-    response.content_type = 'text/xml; charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+@route('/devices\.:format', method='GET')
+def devices(format):
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, 'GET /devices.' + format, error_code)
+    set_content_type(format)
 
     result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<devices>\n"
     numDevices = libtelldus.tdGetNumberOfDevices()
@@ -159,23 +150,26 @@ def devices():
     result += "</devices>"
     return result
 
-@route('/devices/?', method='POST')
-def new_device():
-    errors = []
-    response.content_type = 'text/xml; charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
-
+@route('/devices\.:format', method='POST')
+def new_device(format):
+    request_str = 'POST /devices.' + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
+    
     name = request.POST.get('name', '').strip()
     if not name:
-        errors.append(err(101))
+        return err(format, 400, request_str, 201)
+
     model = request.POST.get('model', '').strip()
     if not model:
-        errors.append(err(102))
+        return err(format, 400, request_str, 202)
+
     protocol = request.POST.get('protocol', '').strip()
     if not protocol:
-        errors.append(err(103))
+            return err(format, 400, request_str, 203)
+        
     rawParams = request.POST.get('parameters', '').strip()
     print rawParams
     parameters = []
@@ -183,12 +177,9 @@ def new_device():
         for param in rawParams.split():
             keyval = param.split('=')
             if len(keyval) != 2:
-                errors.append(err(110))
+                return err(format, 400, request_str, 210)
             else:
                 parameters.append(keyval)
-
-    if len(errors) > 0:
-        return errxml(errors)
 
     identity = libtelldus.tdAddDevice()
     libtelldus.tdSetName(identity, name)
@@ -197,150 +188,118 @@ def new_device():
     print parameters
     for param in parameters:
         libtelldus.tdSetDeviceParameter(identity, param[0], param[1])
-    return read_device(identity)
 
-@route('/devices/:id/?', method='GET')
-def get_device(id, create_header=True):
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+    retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    retval += read_device(identity)
+    return retval
 
-    response.content_type = 'text/xml; charset=UTF-8'
+@route('/devices/:id\.:format', method='GET')
+def get_device(id, format):
+    request_str = 'GET /devices/' + id + "." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
+
+    retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     try:
-        if create_header:
-            retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        else:
-            retval = ""
         retval += read_device(int(id))
         return retval
     except ValueError:
-        errors = []
-        errors.append(err(110))
-        return errxml(errors)
+        return err(format, 400, request_str, 210)
 
 
-@route('/devices/:id/?', method='DELETE')
-def delete_device(id):
-    response.content_type = 'text/xml; charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+@route('/devices/:id\.:format', method='DELETE')
+def delete_device(id, format):
+    request_str = 'DELETE /devices/' + id + "." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
     try:
         retval = libtelldus.tdRemoveDevice(int(id))
     except ValueError:
-        errors = []
-        errors.append(err(110))
-        return errxml(errors)
-    if retval == 1:
-        return ok()
-    else:
-        errors = []
-        errors.append(err(111))
-        return errxml(errors)
+        return err(format, 400, request_str, 210)
 
-@route('/devices/:id/?', method='PUT')
-def change_device(id):
-    errors = []
-    response.content_type = 'text/xml; charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+    if retval == 1:
+        return ""
+    else:
+        return err(format, 400, request_str, 211)
+
+@route('/devices/:id\.:format', method='PUT')
+def change_device(id, format):
+    request_str = 'PUT /devices/' + id + "." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
     name = request.POST.get('name', '').strip()
     protocol = request.POST.get('protocol', '').strip()
     model = request.POST.get('model', '').strip()
     if not name:
-        errors.append(err(101))
-
-    if len(errors) > 0:
-        return errxml(errors)
+        return err(format, 400, request_str, 101)
         
     libtelldus.tdSetName(int(id), name)
     libtelldus.tdSetProtocol(int(id), protocol)
     libtelldus.tdSetModel(int(id), model)
-    return ok()
+    
+    retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    try:
+        retval += read_device(int(id))
+        return retval
+    except ValueError:
+        return err(format, 400, request_str, 210)
+    return ""
 
-@route('/devices/:id/on', method='GET')
-def turnon_device(id):
-    response.content_type = 'text/xml, charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        response.status = 403
-        return err
+@route('/devices/:id/on\.:format', method='GET')
+def turnon_device(id, format):
+    request_str = 'GET /devices/' + id + "/on." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
     retval = libtelldus.tdTurnOn(int(id))
     if retval == 0:
-        return ok(libtelldus.tdGetErrorString(retval))
+        return ""
     else:
-        errors = []
-        errors.append(err(retval, libtelldus.tdGetErrorString(retval)))
-        return errxml(errors)
+        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
 
-@route('/devices/:id/off', method='GET')
-def turnoff_device(id):
-    response.content_type = 'text/xml, charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        response.status = 403
-        return err
+@route('/devices/:id/off\.:format', method='GET')
+def turnoff_device(id, format):
+    request_str = 'GET /devices/' + id + "/off." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
     retval = libtelldus.tdTurnOff(int(id))
     if retval == 0:
-        return ok(libtelldus.tdGetErrorString(retval))
+        return ""
     else:
-        errors = []
-        errors.append(err(retval, libtelldus.tdGetErrorString(retval)))
-        return errxml(errors)
+        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
 
-@route('/devices/:id/dim/:level', method='GET')
-def turnoff_device(id, level): #@DuplicatedSignature
-    response.content_type = 'text/xml, charset=UTF-8'
-    verified, err = verify_api_key(request)
-    if not verified:
-        return err
+@route('/devices/:id/dim/:level\.:format', method='GET')
+def dim_device(id, level, format):
+    request_str = 'GET /devices/' + id + "/dim/" + level + "." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
-    errors = []
     try:
         identity = int(id)
         dimlevel = chr(int(level))
     except ValueError:
-        errors.append(err(110))
-
-    if len(errors) > 0:
-        return errxml(errors)
+        return err(format, 400, request_str, 210)
 
     retval = libtelldus.tdDim(identity, dimlevel)
     if retval == 0:
-        return ok(libtelldus.tdGetErrorString(retval))
+        return ""
     else:
-        errors = []
-        errors.append(err(retval, libtelldus.tdGetErrorString(retval)))
-        return errxml(errors)
-
-@route('/changedevice/')
-def html_changedevice():
-    response.content_type = 'text/html, charset=UTF-8'
-    retval = "<html><head></head><body><form name=\"changedevice\" action=\"/devices/1\" method=\"post\"><input type=\"text\" name=\"name\"/>"
-    retval += "<input type=\"text\" name=\"protocol\"/><input type=\"text\" name=\"model\"/>"
-    retval += "<input type=\"submit\"/></form></body></html>"
-    return retval
-
-@route('/newdevice')
-def html_new_device():
-    response.content_type = 'text/html, charset=UTF-8'
-    retval = "<html><head></head><body><form name=\"newdevice\" action=\"/devices\" method=\"post\">Name:<input type=\"text\" name=\"name\"/><br/>"
-    retval += "Protocol:<input type=\"text\" name=\"protocol\"/><br/>Model:<input type=\"text\" name=\"model\"/><br/>"
-    retval += "Parameters:<input type=\"text\" name=\"parameters\"/><br/><input type=\"submit\"/></form></body></html>"
-    return retval
-
-@route('/deletedevice/:id')
-def html_delete_device(id):
-    response.content_type = 'text/html, charset=UTF-8'
-    retval = "<html><head></head><body><form name=\"deletedevice\" action=\"/devices/" + id + "\" method=\"delete\">"
-    retval += "<input type=\"submit\"/></form></body></html>"
-    return retval
+        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
 
 
 run(reloader=True, port=8001)
-
