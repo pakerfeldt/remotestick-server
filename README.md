@@ -7,7 +7,7 @@ remotestick-server exposes the Tellstick (see http://www.telldus.se) interface t
 telldus-core need be installed. telldus-core is an open-source library developed by the very same company manufacturing the Tellstick, namely Telldus.
 Either:
 
- * install TelldusCenter from [http://download.telldus.se/TellStick/Software/TelldusCenter] (which will give you the telldus-core library as well) or 
+ * install TelldusCenter from [http://download.telldus.se/TellStick/Software/TelldusCenter](http://download.telldus.se/TellStick/Software/TelldusCenter) (which will give you the telldus-core library as well) or 
  * compile/install telldus-core manually. telldus-core is found here http://download.telldus.se/TellStick/Software/telldus-core/
 
 ## Getting it
