@@ -85,13 +85,13 @@ TELLSTICK_DEVICE_EL2019 = 28
 #Protocol Ikea
 TELLSTICK_DEVICE_KOPPLA = 19
 
-ret = util.find_library("TelldusCore")
+ret = util.find_library("telldus-core")
 if ret == None:
     print "None"
 else:
     print ret
 # libtelldus = cdll.LoadLibrary("libtelldus-core.so")
-libtelldus = cdll.LoadLibrary("TelldusCore")
+libtelldus = cdll.LoadLibrary(ret)
 libtelldus.tdGetName.restype = c_char_p
 libtelldus.tdLastSentValue.restype = c_char_p
 libtelldus.tdGetProtocol.restype = c_char_p
