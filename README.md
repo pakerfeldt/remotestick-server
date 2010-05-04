@@ -1,7 +1,7 @@
 # remotestick-server
 
 ## What is it?
-remotestick-server exposes Tellstick (see http://www.telldus.se) through RESTful services. remotestick-server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in JSON format. It aims to fully reflect the capabilities of the libtelldus-core.
+remotestick-server exposes the Tellstick (see http://www.telldus.se) interface through RESTful services. remotestick-server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in JSON format. It aims to fully reflect the capabilities of the libtelldus-core.
 
 ## Pre-requisites
 telldus-core need be installed. telldus-core is an open-source library developed by the very same company manufacturing the Tellstick, namely Telldus.
