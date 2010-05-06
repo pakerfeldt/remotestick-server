@@ -11,13 +11,12 @@
 		android:layout_height="wrap_content" android:id="@+id/editTellstickUri"
 		android:hint="URI" android:layout_width="fill_parent"
 		android:layout_marginLeft="20dp" android:layout_marginRight="20dp"
-		android:layout_marginTop="15dp" android:inputType="textImeMultiLine"></EditText>
+		android:inputType="textImeMultiLine" android:layout_marginTop="10dp"></EditText>
 	<EditText android:layout_below="@+id/editTellstickUri"
-		android:layout_height="wrap_content" android:id="@+id/editTellstickApiKey"
-		android:hint="API key" android:layout_marginLeft="20dp"
+		android:layout_height="wrap_content" android:layout_marginLeft="20dp"
 		android:layout_marginRight="20dp" android:layout_width="fill_parent"
-		android:inputType="textImeMultiLine"></EditText>
-	<RelativeLayout android:layout_height="wrap_content"
+		android:inputType="textImeMultiLine" android:id="@+id/editTellstickUsername" android:hint="Username"></EditText>
+	<EditText android:layout_height="wrap_content" android:layout_below="@+id/editTellstickUsername" android:layout_marginLeft="20dp" android:layout_marginRight="20dp" android:layout_width="fill_parent" android:hint="Password" android:id="@+id/editTellstickPassword" android:inputType="textImeMultiLine"></EditText><RelativeLayout android:layout_height="wrap_content"
 		android:id="@+id/bottomRelativeLayout" android:layout_alignParentBottom="true"
 		android:layout_width="fill_parent" android:layout_centerHorizontal="true"
 		android:background="@color/bottomPanel">
@@ -37,5 +36,6 @@
 				android:layout_marginBottom="5dp" android:layout_weight="50" android:onClick="cancel"></Button>
 		</LinearLayout>
 	</RelativeLayout>
+
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package se.akerfeldt.remotestick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -76,6 +77,7 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	private ListView inactiveList;
 
 	private List<Controller> controllers;
+	private LinkedList<Controller> myControllers;
 	private int currentController;
 	private int numControllers;
 
@@ -87,26 +89,34 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		super.onCreate(savedInstanceState);
 		dbAdapter = new TellstickDbAdapter(this);
 		dbAdapter.open();
+		
+//		dbAdapter.insertController("Test", "http://192.168.1.104:8001", "test",
+//				"test");
 		controllers = dbAdapter.getAllControllers();
+//		for (Controller controller : controllers) {
+//			dbAdapter.removeController(controller.getId());
+//		}
+//		controllers.clear();
 		dbAdapter.close();
 		currentController = 0;
-		if (controllers.isEmpty())
-			Log.v("tellremote", "empty controllers");
-		int i = 1;
-		for (Controller controller : controllers) {
-			ArrayList<Device> myDevices = new ArrayList<Device>();
-			Random generator = new Random(19580427);
-			int num = generator.nextInt(6) + 1;
-			for (int y = 1; y <= num; y++) {
-				Random r = new Random();
-				String token = Long.toString(Math.abs(r.nextLong()), 36);
-				myDevices.add(new Device(y, token, DeviceCommand.OFF));
-			}
-			Log.v("tellremote", myDevices.toString());
-			controller.setDevices(myDevices);
-			Log.v("tellremote", controller.getName());
-			i++;
-		}
+//		if (controllers.isEmpty())
+//			Log.v("tellremote", "empty controllers");
+//		int i = 1;
+//		for (Controller controller : controllers) {
+//			ArrayList<Device> myDevices = new ArrayList<Device>();
+//			Random generator = new Random(19580427);
+//			int num = generator.nextInt(6) + 1;
+//			for (int y = 1; y <= num; y++) {
+//				Random r = new Random();
+//				String token = Long.toString(Math.abs(r.nextLong()), 36);
+//				myDevices.add(new Device(y, token, DeviceCommand.OFF,
+//						new ArrayList<Integer>()));
+//			}
+//			Log.v("tellremote", myDevices.toString());
+//			controller.setDevices(myDevices);
+//			Log.v("tellremote", controller.getName());
+//			i++;
+//		}
 		numControllers = controllers.size();
 		gestureDetector = new GestureDetector(this);
 
@@ -127,10 +137,29 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		// Log.v("tellremote", devices.toString());
 		int resID = R.layout.device_item;
 
-		aa = new DeviceAdapter(this, resID, controllers.get(0).getDevices());
+		int controllerIndex = 0;
+		if (savedInstanceState != null)
+			savedInstanceState.getInt("controller", 0);
+		if (controllers.isEmpty()) {
+			/* Do something clever */
 
-		activeList.setAdapter(aa);
-		registerForContextMenu(activeList);
+		} else {
+			Controller controller;
+			if (controllerIndex > controllers.size() - 1) {
+				/*
+				 * We have controllers but the last used controller has been
+				 * removed, default to first
+				 */
+				controller = controllers.get(0);
+			} else {
+				/* Use previously used controller */
+				controller = controllers.get(controllerIndex);
+			}
+			controller.refresh();
+			aa = new DeviceAdapter(this, resID, controller.getDevices());
+			activeList.setAdapter(aa);
+			registerForContextMenu(activeList);
+		}
 
 		viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
 		// USE THIS TO GET THE CURRENT VIEW IN OPTIONS MENU:
@@ -282,17 +311,23 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 						&& data.hasExtra("apikey")) {
 					String name = data.getStringExtra("name");
 					String uri = data.getStringExtra("uri");
-					String apiKey = data.getStringExtra("apikey");
+					String username = data.getStringExtra("username");
+					String password = data.getStringExtra("password");
 
 					TellstickDbAdapter dbAdapter = new TellstickDbAdapter(this);
 					dbAdapter.open();
 					long identifier = dbAdapter.insertController(name, uri,
-							apiKey);
+							username, password);
 					if (identifier != -1) {
 						Controller controller = dbAdapter
 								.getController(identifier);
 						controllers.add(controller);
 						numControllers = controllers.size();
+						
+						/* FIXME: Call handleNext() when that method has been fixed? */
+						if(currentController == -1) {
+							currentController = controller.getId();
+						}
 						// ok
 					} else {
 						Log
@@ -310,11 +345,15 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 							String uri1 = cursor
 									.getString(cursor
 											.getColumnIndex(TellstickDbAdapter.KEY_URI));
-							String apiKey1 = cursor
+							String username1 = cursor
 									.getString(cursor
-											.getColumnIndex(TellstickDbAdapter.KEY_APIKEY));
+											.getColumnIndex(TellstickDbAdapter.KEY_USERNAME));
+							String password1 = cursor
+									.getString(cursor
+											.getColumnIndex(TellstickDbAdapter.KEY_PASSWORD));
 							Log.v("tellremote", "Found controller " + name1
-									+ ", " + uri1 + ", " + apiKey1);
+									+ ", " + uri1 + ", " + username1 + ", "
+									+ password1);
 						} while (cursor.moveToNext());
 					}
 					cursor.deactivate();
@@ -363,8 +402,6 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		boolean result = controllers.get(currentController).turnOff(device);
 		Log.v("tellremote", "Turn off device: " + String.valueOf(result));
 	}
-
-
 
 	private boolean deleteDevice(Device device) {
 		// TellRemoteServerHandler handler = new TellRemoteServerHandler();
@@ -467,6 +504,7 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	}
 
 	private void handleNext() {
+		/* FIXME: This won't work! We can't guarantee that the controller ids are 1,2,3,4 */
 		currentController++;
 		if (currentController >= numControllers)
 			currentController = 0;

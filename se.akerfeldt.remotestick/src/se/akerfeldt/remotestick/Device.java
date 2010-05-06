@@ -1,19 +1,25 @@
 package se.akerfeldt.remotestick;
 
+import java.util.List;
+
 
 public class Device {
 	
-	final private Integer id;
+	private final Integer id;
 	
-	final private String name;
+	private final String name;
 	
-	final private DeviceCommand lastCommand;
+	private final DeviceCommand lastCommand;
 
-	public Device(Integer id, String name, DeviceCommand lastCommand) {
+	/* TODO: Could be changed to a single int instead */
+	private final List<Integer> supportedMethods;
+
+	public Device(Integer id, String name, DeviceCommand lastCommand, List<Integer> supportedMethods) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.lastCommand = lastCommand;
+		this.supportedMethods = supportedMethods;
 	}
 
 	public Integer getId() {
@@ -28,9 +34,13 @@ public class Device {
 		return lastCommand;
 	}
 
+	public List<Integer> getSupportedMethods() {
+		return supportedMethods;
+	}
+
 	@Override
 	public String toString() {
-		return name;
+		return id + "/" + name + supportedMethods;
 	}
 	
 }
