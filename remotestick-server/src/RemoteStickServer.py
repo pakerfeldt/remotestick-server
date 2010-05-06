@@ -85,7 +85,7 @@ TELLSTICK_DEVICE_EL2019 = 28
 #Protocol Ikea
 TELLSTICK_DEVICE_KOPPLA = 19
 
-ret = util.find_library("telldus-core")
+ret = util.find_library("TelldusCore")
 if ret == None:
     print "None"
 else:
@@ -100,13 +100,14 @@ libtelldus.tdGetErrorString.restype = c_char_p
 
 def errmsg(x):
     return {
-        100: "API key could not be verified.",
+        100: "API key could not be verified",
         101: "Unsupported format",
-        201: "Name not supplied.",
-        202: "Model not supplied.",
-        203: "Protocol not supplied.",
-        210: "Malformed parameters.",
-        211: "No device removed.",
+        201: "Name not supplied",
+        202: "Model not supplied",
+        203: "Protocol not supplied",
+        210: "Malformed parameters",
+        211: "No device removed",
+        220: "Method not supported",
         300: "Telldus-core error"
     }[x]
    
@@ -139,17 +140,17 @@ def read_device(identity):
     element = "<device id=\"" + str(identity) + "\">\n\t\t<name>" + name + "</name>\n\t\t<protocol>" + protocol + "</protocol>\n\t\t<model>" + model + "</model>\n"
     element += "\t\t<lastcmd>" + ("ON" if lastcmd == 1 else "OFF") + "</lastcmd>\n"
     if methods & TELLSTICK_BELL:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_BELL</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_BELL) + "\">" + "TELLSTICK_BELL</supportedMethod>\n"
     if methods & TELLSTICK_TOGGLE:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_TOGGLE</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_TOGGLE) + "\">" + "TELLSTICK_TOGGLE</supportedMethod>\n"
     if methods & TELLSTICK_TURNOFF:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_TURNOFF</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_TURNOFF) + "\">" + "TELLSTICK_TURNOFF</supportedMethod>\n"
     if methods & TELLSTICK_TURNON:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_TURNON</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_TURNON) + "\">" + "TELLSTICK_TURNON</supportedMethod>\n"
     if methods & TELLSTICK_DIM:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_DIM</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_DIM) + "\">" + "TELLSTICK_DIM</supportedMethod>\n"
     if methods & TELLSTICK_LEARN:
-        element += "\t\t<supportedMethod>" + "TELLSTICK_LEARN</supportedMethod>\n"
+        element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_LEARN) + "\">" + "TELLSTICK_LEARN</supportedMethod>\n"
     element += "</device>\n"
     return element
 
@@ -290,12 +291,20 @@ def turnon_device(id, format):
     if not ok:
         return err(format, response_code, request_str, error_code)
     set_content_type(format)
-
-    retval = libtelldus.tdTurnOn(int(id))
-    if retval == 0:
-        return ""
+    
+    try:
+        identity = int(id)
+    except ValueError:
+        return err(format, 400, request_str, 210)
+    
+    if libtelldus.tdMethods(identity, TELLSTICK_TURNON) & TELLSTICK_TURNON:    
+        retval = libtelldus.tdTurnOn(identity)
+        if retval == 0:
+            return ""
+        else:
+            return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
     else:
-        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
+        return err(format, 400, request_str, 220)
 
 @route('/devices/:id/off\.:format', method='GET')
 def turnoff_device(id, format):
@@ -305,11 +314,19 @@ def turnoff_device(id, format):
         return err(format, response_code, request_str, error_code)
     set_content_type(format)
 
-    retval = libtelldus.tdTurnOff(int(id))
-    if retval == 0:
-        return ""
+    try:
+        identity = int(id)
+    except ValueError:
+        return err(format, 400, request_str, 210)
+    
+    if libtelldus.tdMethods(identity, TELLSTICK_TURNOFF) & TELLSTICK_TURNOFF:    
+        retval = libtelldus.tdTurnOff(identity)
+        if retval == 0:
+            return ""
+        else:
+            return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
     else:
-        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
+        return err(format, 400, request_str, 220)
 
 @route('/devices/:id/dim/:level\.:format', method='GET')
 def dim_device(id, level, format):
@@ -325,11 +342,13 @@ def dim_device(id, level, format):
     except ValueError:
         return err(format, 400, request_str, 210)
 
-    retval = libtelldus.tdDim(identity, dimlevel)
-    if retval == 0:
-        return ""
+    if libtelldus.tdMethods(identity, TELLSTICK_DIM) & TELLSTICK_DIM:    
+        retval = libtelldus.tdDim(identity, dimlevel)
+        if retval == 0:
+            return ""
+        else:
+            return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
     else:
-        return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
-
+        return err(format, 400, request_str, 220)
 
 run(reloader=True, port=8001)
