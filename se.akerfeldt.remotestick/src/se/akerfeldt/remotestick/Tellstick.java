@@ -77,7 +77,6 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	private ListView inactiveList;
 
 	private List<Controller> controllers;
-	private LinkedList<Controller> myControllers;
 	private int currentController;
 	private int numControllers;
 
@@ -322,13 +321,9 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 						Controller controller = dbAdapter
 								.getController(identifier);
 						controllers.add(controller);
+						currentController = controllers.indexOf(controller);
 						numControllers = controllers.size();
-						
-						/* FIXME: Call handleNext() when that method has been fixed? */
-						if(currentController == -1) {
-							currentController = controller.getId();
-						}
-						// ok
+						showCurrentController(true)
 					} else {
 						Log
 								.e("tellremote",
@@ -471,15 +466,9 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 				handleNext();
-				viewFlipper.setInAnimation(slideLeftIn);
-				viewFlipper.setOutAnimation(slideLeftOut);
-				viewFlipper.showNext();
 			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
 					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 				handlePrevious();
-				viewFlipper.setInAnimation(slideRightIn);
-				viewFlipper.setOutAnimation(slideRightOut);
-				viewFlipper.showPrevious();
 
 			}
 		} catch (Exception e) {
@@ -503,14 +492,8 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		return false;
 	}
 
-	private void handleNext() {
-		/* FIXME: This won't work! We can't guarantee that the controller ids are 1,2,3,4 */
-		currentController++;
-		if (currentController >= numControllers)
-			currentController = 0;
-
+	private void showCurrentController(boolean slideToRight)  {
 		Controller controller = controllers.get(currentController);
-
 		View emptyLabel = findViewById(R.id.emptyLabel);
 		if (controller != null && !controller.getDevices().isEmpty()) {
 			emptyLabel.setVisibility(TextView.INVISIBLE);
@@ -520,39 +503,37 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 			ListView tmp = activeList;
 			activeList = inactiveList;
 			inactiveList = tmp;
-		} else {
+		} else
 			emptyLabel.setVisibility(TextView.VISIBLE);
+
+		if(slideToRight) {
+			/* Slide in the previously inactive view */
+			viewFlipper.setInAnimation(slideLeftIn);
+			viewFlipper.setOutAnimation(slideLeftOut);
+			viewFlipper.showNext();
+		} else {
+			/* Slide in the previously inactive view */
+			viewFlipper.setInAnimation(slideRightIn);
+			viewFlipper.setOutAnimation(slideRightOut);
+			viewFlipper.showPrevious();
 		}
 
-		// devices = getDevices();
-		//
-		// Log.v("tellremote", devices.toString());
-		// int resID = R.layout.device_item;
-		//
-		// aa = new DeviceAdapter(this, resID, devices);
-		//
-		// inactiveList.setAdapter(aa);
+	}
+
+	private void handleNext() {
+		currentController++;
+		if (currentController >= numControllers)
+			currentController = 0;
+
+		showCurrentController(true);
 	}
 
 	private void handlePrevious() {
 		currentController--;
 		if (currentController < 0)
 			currentController = numControllers - 1;
-
-		Controller controller = controllers.get(currentController);
-
-		View emptyLabel = findViewById(R.id.emptyLabel);
-		if (controller != null && !controller.getDevices().isEmpty()) {
-			emptyLabel.setVisibility(TextView.INVISIBLE);
-			int resID = R.layout.device_item;
-			aa = new DeviceAdapter(this, resID, controller.getDevices());
-			inactiveList.setAdapter(aa);
-			ListView tmp = activeList;
-			activeList = inactiveList;
-			inactiveList = tmp;
-		} else {
-			emptyLabel.setVisibility(TextView.VISIBLE);
-		}
+	
+		showCurrentController(false);
 	}
 
 	private List<Device> getDevices() {
