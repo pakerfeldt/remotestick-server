@@ -1,9 +1,9 @@
 # remotestick-server
 
 ## What is it?
-remotestick-server exposes the Tellstick (see [Telldus Homepage](http://www.telldus.se) ) interface through RESTful services. remotestick-server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in JSON format. It aims to fully reflect the capabilities of the libtelldus-core.
+remotestick-server exposes the Tellstick (see [Telldus Homepage](http://www.telldus.se) ) interface through RESTful services. remotestick-server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in XML format (support for JSON format is planned). It aims to fully reflect the capabilities of the libtelldus-core.
 
-## Pre-requisites
+## Prerequisites
 telldus-core need be installed. telldus-core is an open-source library developed by the very same company manufacturing the Tellstick, namely Telldus.
 Either:
 
@@ -22,6 +22,6 @@ The -h flag will give you help about available command line arguments:
 Starting remotestick-server is as simple as:
     remotestick-server
 
-By default, no API key will be used (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8052.
+By default, no authentication will be used (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8080. Only Basic Authentication (HTTP) currently supported.
 Overriding default values is done by:
-    remotestick-server -a MySecretKey -h 192.168.1.50 -p 9055
+    remotestick-server -a username:password -h 192.168.1.50 -p 9055
