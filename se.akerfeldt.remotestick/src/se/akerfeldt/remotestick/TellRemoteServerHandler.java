@@ -13,31 +13,19 @@ import android.util.Log;
 
 public class TellRemoteServerHandler extends DefaultHandler {
 
-	private boolean inDevices = false;
 	private boolean inDevice;
-
 	private List<Device> devices;
-
 	private StringBuilder characters;
-
 	private String deviceName;
-
 	private boolean readCharacters;
-
 	private String deviceProtocol;
-
 	private String deviceModel;
-
 	private Map<String, String> deviceParameters;
-
 	private Integer deviceId;
-
 	private DeviceCommand deviceLastCommand;
-
-	private Device device;
-	private boolean inResponse;
-	private Integer responseCode;
-	private String responseMsg;
+	private String request;
+	private String error;
+	private List<Integer> supportedMethods;
 
 	public TellRemoteServerHandler() {
 		devices = new ArrayList<Device>();
@@ -52,30 +40,30 @@ public class TellRemoteServerHandler extends DefaultHandler {
 				characters.append(ch[i]);
 		}
 
-		System.out.print("Characters:    \"");
-		for (int i = start; i < start + length; i++) {
-			switch (ch[i]) {
-			case '\\':
-				System.out.print("\\\\");
-				break;
-			case '"':
-				System.out.print("\\\"");
-				break;
-			case '\n':
-				System.out.print("\\n");
-				break;
-			case '\r':
-				System.out.print("\\r");
-				break;
-			case '\t':
-				System.out.print("\\t");
-				break;
-			default:
-				System.out.print(ch[i]);
-				break;
-			}
-		}
-		System.out.print("\"\n");
+		// System.out.print("Characters:    \"");
+		// for (int i = start; i < start + length; i++) {
+		// switch (ch[i]) {
+		// case '\\':
+		// System.out.print("\\\\");
+		// break;
+		// case '"':
+		// System.out.print("\\\"");
+		// break;
+		// case '\n':
+		// System.out.print("\\n");
+		// break;
+		// case '\r':
+		// System.out.print("\\r");
+		// break;
+		// case '\t':
+		// System.out.print("\\t");
+		// break;
+		// default:
+		// System.out.print(ch[i]);
+		// break;
+		// }
+		// }
+		// System.out.print("\"\n");
 
 	}
 
@@ -90,10 +78,9 @@ public class TellRemoteServerHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
-		if ("devices".equals(localName)) {
-			inDevices = true;
-		} else if ("device".equals(localName)) {
+		if ("device".equals(localName)) {
 			inDevice = true;
+			supportedMethods = new ArrayList<Integer>();
 			try {
 				deviceId = Integer.valueOf(attributes.getValue("id"));
 			} catch (NumberFormatException nfe) {
@@ -102,26 +89,23 @@ public class TellRemoteServerHandler extends DefaultHandler {
 			}
 			deviceParameters = new HashMap<String, String>();
 		} else if (inDevice) {
+			if ("supportedMethod".equals(localName))
+				supportedMethods
+						.add(Integer.valueOf(attributes.getValue("id")));
+			else
+				expectCharacters();
+		} else if ("request".equals(localName)) {
 			expectCharacters();
-		} else if ("response".equals(localName)) {
-			inResponse = true;
-			try {
-				responseCode = Integer.valueOf(attributes.getValue("code"));
-			} catch (NumberFormatException nfe) {
-				throw new SAXException(
-						"code attribute of response element is not a number",
-						nfe);
-			}
+		} else if ("error".equals(localName)) {
 			expectCharacters();
 		}
-
 		// System.out.println("TellRemoteServerHandler.startElement()");
-		if ("".equals(uri))
-			System.out.println("Start element: " + qName);
-		else
-			System.out.println("Start element: {" + uri + "}" + localName);
-
-		System.out.println(attributes);
+		// if ("".equals(uri))
+		// System.out.println("Start element: " + qName);
+		// else
+		// System.out.println("Start element: {" + uri + "}" + localName);
+		//
+		// System.out.println(attributes);
 	}
 
 	@Override
@@ -133,7 +117,9 @@ public class TellRemoteServerHandler extends DefaultHandler {
 		Log.v("tellremote", "Ending element " + localName);
 		if ("device".equals(localName)) {
 			inDevice = false;
-			devices.add(new Device(deviceId, deviceName, deviceLastCommand));
+			devices.add(new Device(deviceId, deviceName, deviceLastCommand,
+					supportedMethods));
+			supportedMethods = null;
 			Log.v("tellremote", "Adding device...");
 		} else if (inDevice) {
 			if ("name".equals(localName))
@@ -151,13 +137,13 @@ public class TellRemoteServerHandler extends DefaultHandler {
 				else
 					throw new SAXException(
 							"lastcmd element contains illegal value");
-			} else {
+			} else if (!"supportedMethod".equals(localName)) {
 				deviceParameters.put(localName, pullCharacters());
 			}
-		} else if ("devices".equals(localName)) {
-			inDevices = false;
-		} else if (inResponse) {
-			responseMsg = pullCharacters();
+		} else if ("request".equals(localName)) {
+			request = pullCharacters();
+		} else if ("error".equals(localName)) {
+			error = pullCharacters();
 		}
 
 	}
@@ -177,8 +163,12 @@ public class TellRemoteServerHandler extends DefaultHandler {
 	public List<Device> getDevices() {
 		return devices;
 	}
-	
-	public Integer getResponseCode() {
-		return responseCode;
+
+	public String getRequestOnError() {
+		return request;
+	}
+
+	public String getError() {
+		return error;
 	}
 }

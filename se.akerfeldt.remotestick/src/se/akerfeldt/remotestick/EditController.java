@@ -10,7 +10,8 @@ public class EditController extends Activity {
 
 	private EditText name;
 	private EditText uri;
-	private EditText apiKey;
+	private EditText username;
+	private EditText password;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,8 @@ public class EditController extends Activity {
 			setContentView(R.layout.edit_controller);
 			name = (EditText) findViewById(R.id.editTellstickName);
 			uri = (EditText) findViewById(R.id.editTellstickUri);
-			apiKey = (EditText) findViewById(R.id.editTellstickApiKey);
+			username = (EditText) findViewById(R.id.editTellstickUsername);
+			password = (EditText) findViewById(R.id.editTellstickPassword);
 			break;
 		}
 
@@ -40,7 +42,8 @@ public class EditController extends Activity {
 		Intent intent = new Intent();
 		intent.putExtra("name", name.getText().toString());
 		intent.putExtra("uri", uri.getText().toString());
-		intent.putExtra("apikey", apiKey.getText().toString());
+		intent.putExtra("username", username.getText().toString());
+		intent.putExtra("password", password.getText().toString());
 
 		setResult(RESULT_OK, intent);
 		finish();
