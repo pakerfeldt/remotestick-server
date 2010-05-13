@@ -32,6 +32,9 @@
 
 from bottle import route, run, response, request
 from ctypes import cdll, c_char_p, util
+from getopt import getopt, GetoptError
+from sys import argv, exit, platform
+from base64 import b64encode
 
 #Device methods
 TELLSTICK_TURNON = 1
@@ -85,18 +88,30 @@ TELLSTICK_DEVICE_EL2019 = 28
 #Protocol Ikea
 TELLSTICK_DEVICE_KOPPLA = 19
 
-ret = util.find_library("TelldusCore")
-if ret == None:
-    print "None"
-else:
-    print ret
-# libtelldus = cdll.LoadLibrary("libtelldus-core.so")
-libtelldus = cdll.LoadLibrary(ret)
-libtelldus.tdGetName.restype = c_char_p
-libtelldus.tdLastSentValue.restype = c_char_p
-libtelldus.tdGetProtocol.restype = c_char_p
-libtelldus.tdGetModel.restype = c_char_p
-libtelldus.tdGetErrorString.restype = c_char_p
+reqauth = True
+encodedauth = None
+libtelldus = None
+
+def loadlibrary(libraryname=None):
+    if libraryname == None and platform == "darwin":
+        libraryname = "TelldusCore"
+    elif libraryname == None:
+        libraryname = "libtelldus-core"
+        
+    ret = util.find_library(libraryname)
+    
+    if ret == None:
+        return (None, libraryname)
+
+    global libtelldus
+    libtelldus = cdll.LoadLibrary(ret)
+    libtelldus.tdGetName.restype = c_char_p
+    libtelldus.tdLastSentValue.restype = c_char_p
+    libtelldus.tdGetProtocol.restype = c_char_p
+    libtelldus.tdGetModel.restype = c_char_p
+    libtelldus.tdGetErrorString.restype = c_char_p
+
+    return ret, libraryname
 
 def errmsg(x):
     return {
@@ -125,11 +140,11 @@ def err_xml(request, msg):
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n\t<request>" + request + "</request>\n\t<error>" + msg + "</error>\n</hash>"
 
 def authenticate(encoded_base64):
-    print encoded_base64
-    if encoded_base64 == "Basic dGVzdDp0ZXN0":
-        return True
+    global encodedauth
+    if reqauth:
+        return encodedauth == encoded_base64
     else:
-        return False
+        return True
 
 def read_device(identity):
     name = libtelldus.tdGetName(identity)
@@ -156,7 +171,7 @@ def read_device(identity):
 
 def pre_check(format, accepted_formats):
     if format not in accepted_formats:
-        return False,  400, 101
+        return False, 400, 101
     
     if not authenticate(request.authorization):
         return False, 401, 100
@@ -351,4 +366,69 @@ def dim_device(id, level, format):
     else:
         return err(format, 400, request_str, 220)
 
-run(reloader=True, port=8001)
+def usage():
+    print "Usage: RemoteStickServer [OPTION]..."
+    print "Expose tellstick services through RESTful services."
+    print ""
+    print "Without any arguments RemoteStickServer will start a http server on 127.0.0.1:8080 where no authentication is required."
+    print "Setting the name of the telldus-core library should not be needed. RemoteStickServer is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
+    print ""
+    print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
+    print "-p, --post\t\tport which the server will listen on, default to 8080"
+    print "-u, --username\t\tusername used for client authentication"
+    print "-p, --password\t\tpassword used for client authentication"
+    print "-l, --library\t\tname of telldus-core library"
+
+def main():
+    try:
+        opts, args = getopt(argv[1:], "?h:p:u:s:l:", ["?", "host=", "port=", "username=", "password=", "library="])
+    except GetoptError, err:
+        print str(err)
+        usage()
+        exit(2)
+    host = None
+    port = None
+    library = None
+    username = None
+    password = None
+    global reqauth
+    global encodedauth
+    
+    for o, a in opts:
+        if o in ("-h", "--host"):
+            host = a
+        elif o in ("-p", "--port"):
+            port = a
+        elif o in ("-u", "--username"):
+            username = a
+        elif o in ("-s", "--password"):
+            password = a
+        elif o in ("-l", "--library"):
+            library = a
+        elif o == '-?':
+            usage()
+            exit()
+        else:
+            assert False, "unhandled option " + o
+    
+    lib, libname = loadlibrary(library)
+    if lib == None:
+        print "Error: Cannot find library " + libname
+        
+    if username == None or password == None:
+        print "Warning: No authentication required. Please consider setting --username and --password."
+        reqauth = False
+    else:
+        encodedauth = "Basic " + b64encode(username + ":" + password)
+        
+    if (host == None and port == None):
+        run()
+    elif host != None and port == None:
+        run(host=host)
+    elif host == None and port != None:
+        run(port=port)
+    else:
+        run(host=host, port=port)
+             
+if __name__ == "__main__":
+    main()
