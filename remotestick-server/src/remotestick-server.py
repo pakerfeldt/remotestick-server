@@ -367,11 +367,11 @@ def dim_device(id, level, format):
         return err(format, 400, request_str, 220)
 
 def usage():
-    print "Usage: RemoteStickServer [OPTION]..."
+    print "Usage: remotestick-server [OPTION]..."
     print "Expose tellstick services through RESTful services."
     print ""
-    print "Without any arguments RemoteStickServer will start a http server on 127.0.0.1:8080 where no authentication is required."
-    print "Setting the name of the telldus-core library should not be needed. RemoteStickServer is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
+    print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8080 where no authentication is required."
+    print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
     print ""
     print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
     print "-p, --post\t\tport which the server will listen on, default to 8080"
