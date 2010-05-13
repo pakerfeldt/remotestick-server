@@ -16,12 +16,12 @@ Either:
  * A bleeding edge version of remotestick-server can be grabbed from the github repository under remotestick-server/.
 
 ## Using it
-The -h flag will give you help about available command line arguments:
-    remotestick-server -h
+The -? flag will give you help about available command line arguments:
+    remotestick-server.py -?
 
-Starting remotestick-server is as simple as:
-    remotestick-server
+Starting remotestick-server is as simple as (although not recommended, see below):
+    remotestick-server.py
 
-By default, no authentication will be used (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8080. Only Basic Authentication (HTTP) currently supported.
-Overriding default values is done by:
-    remotestick-server -a username:password -h 192.168.1.50 -p 9055
+By default, no authentication will be required (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8080. Only Basic Authentication (HTTP) currently supported.
+You should at least set a username and password, requiring client authentication:
+    remotestick-server.py --username MyUsername --password MyPassword
