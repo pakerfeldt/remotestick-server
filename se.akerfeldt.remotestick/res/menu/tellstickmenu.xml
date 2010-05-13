@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+<item android:icon="@drawable/ic_menu_add" android:id="@+id/addDevice" android:title="@string/add_device"></item>
+<item android:id="@+id/refreshDevices" android:title="@string/refresh_devices" android:icon="@drawable/ic_menu_refresh"></item>
+	<item android:id="@+id/controller" android:title="Controller"
+		android:icon="@drawable/ic_menu_more">
+		<menu>
+<item android:icon="@drawable/ic_menu_add" android:id="@+id/addController" android:title="@string/add_controller"></item>
+	<item android:icon="@drawable/ic_menu_edit" android:id="@+id/editController"
+		android:title="@string/edit_controller"></item>
+	<item android:icon="@drawable/ic_menu_delete" android:id="@+id/removeController"
+		android:title="@string/remove_controller"></item>
+
+		</menu>
+	</item>
+</menu>

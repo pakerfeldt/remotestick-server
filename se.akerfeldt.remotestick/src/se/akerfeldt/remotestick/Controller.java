@@ -23,6 +23,7 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
@@ -44,15 +45,18 @@ public class Controller {
 	private List<Device> devices;
 	private BasicCredentialsProvider credsProvider;
 	private HttpRequestInterceptor preemptiveAuth;
-	private final Integer id;
-
-	public Controller(Integer id, String name, String uri, String username, String password) {
+	private final long id;
+	private boolean refreshed;
+	
+	public Controller(int id, String name, String uri, String username,
+			String password) {
 		this.id = id;
 		this.name = name;
 		this.uri = uri;
 		this.username = username;
 		this.password = password;
 		this.devices = new ArrayList<Device>();
+		refreshed = false;
 		Log.v("tellremote", "Creating Controller - " + name + ", " + uri);
 
 		// TODO: Could possibly reuse the same Interceptor in every Controller
@@ -120,8 +124,8 @@ public class Controller {
 	public void setDevices(List<Device> devices) {
 		this.devices = devices;
 	}
-	
-	public Integer getId() {
+
+	public long getId() {
 		return id;
 	}
 
@@ -173,7 +177,8 @@ public class Controller {
 		}
 	}
 
-	public boolean refresh() {
+	public Response refresh() {
+		refreshed = true;
 		TellRemoteServerHandler handler = new TellRemoteServerHandler();
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -181,7 +186,8 @@ public class Controller {
 			DefaultHttpClient client = new DefaultHttpClient();
 			client.addRequestInterceptor(preemptiveAuth, 0);
 			client.setCredentialsProvider(getCredentialsProvider());
-			HttpGet request = new HttpGet( uri + "/devices.xml");
+			URI resource = new URI(uri + "/devices.xml");
+			HttpGet request = new HttpGet(resource);
 			HttpResponse response = client.execute(request);
 			Log.v("tellremote", response.getStatusLine().toString());
 			parser.parse(response.getEntity().getContent(), handler);
@@ -191,30 +197,35 @@ public class Controller {
 				for (Device device : devices) {
 					Log.v("tellremote", device.toString());
 				}
-				return true;
+				return new Response(true, 200);
 			} else if (response.getStatusLine().getStatusCode() != 404) {
-				Log.v("tellremote", handler.getError() + " on request " + handler.getRequestOnError());
-				return false;
+				Log.v("tellremote", handler.getError() + " on request "
+						+ handler.getRequestOnError());
+				return new Response(false, response.getStatusLine().getStatusCode(), handler.getError());
 			} else {
 				Log.v("tellremote", "404 Error");
-				return false;
+				return new Response(false, 404, "Error while refreshing devices: Resource not found");
 			}
 		} catch (Exception e) {
 			Log.v("tellremote", "Exception " + e.getMessage());
 			e.printStackTrace();
-			return false;
+			return new Response(false, 1, "Error: " + e.getMessage());
 		}
 	}
 
-	public boolean turnOn(Device device) {
+	public Response dim(Device device, int level) {
+		return invokeMethod(device, "dim/" + level + ".xml");
+	}
+	
+	public Response turnOn(Device device) {
 		return invokeMethod(device, "on.xml");
 	}
 
-	public boolean turnOff(Device device) {
+	public Response turnOff(Device device) {
 		return invokeMethod(device, "off.xml");
 	}
 
-	private boolean invokeMethod(Device device, String method) {
+	private Response invokeMethod(Device device, String method) {
 		TellRemoteServerHandler handler = new TellRemoteServerHandler();
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -226,17 +237,18 @@ public class Controller {
 			HttpGet request = new HttpGet(url);
 			HttpResponse response = client.execute(request);
 			if (response.getStatusLine().getStatusCode() == 200)
-				return true;
+				return new Response(true, 200);
 			else if (response.getStatusLine().getStatusCode() != 404) {
 				parser.parse(response.getEntity().getContent(), handler);
-				Log.v("tellremote", handler.getError() + " on request " + handler.getRequestOnError());
-				return false;
+				Log.v("tellremote", handler.getError() + " on request "
+						+ handler.getRequestOnError());
+				return new Response(false, response.getStatusLine().getStatusCode(), handler.getError());
 			} else
-				return false;
+				return new Response(false, 404, "Error: Resource not found");
 		} catch (Exception e) {
 			Log.v("tellremote", "Exception " + e.getMessage());
 			e.printStackTrace();
-			return false;
+			return new Response(false, 1, "Error: " + e.getMessage());
 		}
 	}
 
@@ -253,4 +265,45 @@ public class Controller {
 		return credsProvider;
 
 	}
+
+	public boolean delete(Device device) {
+		TellRemoteServerHandler handler = new TellRemoteServerHandler();
+		try {
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			SAXParser parser = factory.newSAXParser();
+			DefaultHttpClient client = new DefaultHttpClient();
+			client.addRequestInterceptor(preemptiveAuth, 0);
+			client.setCredentialsProvider(getCredentialsProvider());
+			String url = uri + "/devices/" + device.getId() + ".xml";
+
+			HttpDelete request = new HttpDelete(url);
+			HttpResponse response = client.execute(request);
+
+			if (response.getStatusLine().getStatusCode() == 200) {
+				devices.remove(device);
+				return true;
+			} else if (response.getStatusLine().getStatusCode() != 404) {
+				parser.parse(response.getEntity().getContent(), handler);
+				Log.v("tellremote", handler.getError() + " on request "
+						+ handler.getRequestOnError());
+				return false;
+			} else
+				return false;
+		} catch (Exception e) {
+			Log.v("tellremote", "Exception " + e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	public void dispose() {
+		devices.clear();
+	}
+
+	public boolean isRefreshed() {
+		return refreshed;
+	}
+
+
 }

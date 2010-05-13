@@ -135,6 +135,7 @@ public class TellstickDbAdapter {
 				controllers.add(new Controller(id, name, uri, username, password));
 			}
 		}
+		cursor.close();
 		return controllers;
 	}
 

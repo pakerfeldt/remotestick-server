@@ -8,12 +8,12 @@
 		android:layout_width="wrap_content" android:textColorHighlight="@color/highlightedDevice" android:textColor="@color/selectedDevice"></TextView>
 
 	<Button android:layout_width="wrap_content" android:focusable="false"
-		android:layout_height="wrap_content" android:id="@+id/turnOn"
+		android:layout_height="wrap_content" android:id="@+id/turnOn" android:drawableLeft="@drawable/light_on"
 		android:onClick="turnOn" android:layout_alignParentRight="false"
 		android:layout_toLeftOf="@+id/turnOff" android:paddingLeft="20dp"
-		android:paddingRight="20dp" android:text="ON"></Button>
+		android:paddingRight="20dp" android:height="48dp"></Button>
 	<Button android:layout_height="wrap_content" android:focusable="false"
-		android:layout_width="wrap_content" android:id="@+id/turnOff"
+		android:layout_width="wrap_content" android:id="@+id/turnOff" android:drawableLeft="@drawable/light_off"
 		android:onClick="turnOff" android:layout_alignParentRight="true"
-		android:paddingLeft="20dp" android:paddingRight="20dp" android:text="OFF"></Button>
+		android:paddingLeft="20dp" android:paddingRight="20dp"  android:height="48dp"></Button>
 </RelativeLayout>

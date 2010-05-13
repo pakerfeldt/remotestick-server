@@ -5,6 +5,13 @@ import java.util.List;
 
 public class Device {
 	
+	public static int TELLSTICK_TURNON = 1;
+	public static int TELLSTICK_TURNOFF = 2;
+	public static int TELLSTICK_BELL = 4;
+	public static int TELLSTICK_TOGGLE = 8;
+	public static int TELLSTICK_DIM = 16;
+	public static int TELLSTICK_LEARN = 32;
+	
 	private final Integer id;
 	
 	private final String name;

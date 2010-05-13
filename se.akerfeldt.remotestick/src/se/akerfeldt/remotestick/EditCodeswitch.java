@@ -20,7 +20,7 @@ public class EditCodeswitch extends Activity {
 
 		switch (requestCode) {
 
-		case Tellstick.REQUEST_CREATE_CODESWITCH:
+		case Tellstick.INTENT_TYPE_CREATE_CODESWITCH:
 			createEditCodeswitch(savedInstanceState);
 			break;
 
@@ -58,7 +58,7 @@ public class EditCodeswitch extends Activity {
 		intent.putExtra("name", nameView.getText());
 
 		switch (requestCode) {
-		case Tellstick.REQUEST_CREATE_CODESWITCH:
+		case Tellstick.INTENT_TYPE_CREATE_CODESWITCH:
 			intent.putExtra("model", "codeswitch");
 			intent.putExtra("protocol", "arctech");
 			intent.putExtra("house", (String)(((Spinner)findViewById(R.id.spinnerHouse)).getSelectedItem()));

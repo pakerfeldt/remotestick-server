@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/flipper" android:layout_width="fill_parent"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/flipper" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 
-	<LinearLayout
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:id="@+id/layout1">
+		<TextView android:id="@+id/listHeader" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:text="Controller Name" android:gravity="center_horizontal" android:background="@color/controller_bg" android:textColor="@color/controller_fore"/>
 
-		<ListView android:id="@android:id/list" android:layout_width="fill_parent"
+		<ListView android:id="@+id/list" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" />
-		<TextView android:id="@android:id/empty"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="@string/no_devices" />
+
+		<TextView android:id="@+id/emptyLabel" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/no_devices"/>
+
 	</LinearLayout>
 
-	<LinearLayout
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-
-		<ListView android:id="@+id/secondListView" android:layout_width="fill_parent"
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:id="@+id/layout2">
+		<TextView android:id="@+id/listHeader" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:gravity="center_horizontal" android:textColor="@color/controller_fore" android:background="@color/controller_bg"/>
+		<ListView android:id="@+id/list" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" />
-		<TextView android:id="@+id/emptyLabel"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="@string/no_devices" />
+		<TextView android:id="@+id/emptyLabel" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/no_devices"/>
 	</LinearLayout>
 
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">TellRemote</string>
-<string name="no_devices">Tellstick has no devices - Use the menu to add a device</string>
+    <string name="app_name">RemoteStick</string>
+<string name="no_devices">No devices found for controller</string>
 <string name="new_device">New device</string>
 <string name="refresh">Refresh</string>
 <string name="name">Name</string>
@@ -13,4 +13,11 @@
 <string name="cancel">Cancel</string>
 <string name="nexa_codeswitch">NEXA/codeswitch</string>
 <string name="nexa_selflearning_switch">NEXA/Selflearning switch</string>
+<string name="add_controller">Add Controller</string>
+<string name="edit_controller">Edit Controller</string>
+<string name="remove_controller">Remove Controller</string>
+<string name="add_device">Add Device</string>
+<string name="refresh_devices">Refresh</string>
+<string name="delete_device">Delete</string>
+<string name="modify_device">Modify</string>
 </resources>

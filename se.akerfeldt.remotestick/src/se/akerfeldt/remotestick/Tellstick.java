@@ -1,28 +1,21 @@
 package se.akerfeldt.remotestick;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import android.app.ListActivity;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
@@ -34,31 +27,36 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class Tellstick extends ListActivity implements OnGestureListener {
+public class Tellstick extends Activity implements OnGestureListener, OnSeekBarChangeListener {
 
 	// private List<Device> devices;
 
 	private ArrayAdapter<Device> aa;
 
-	private SAXParserFactory factory;
-
 	private static final int DELETE_ID = Menu.FIRST;
 	private static final int MODIFY_ID = Menu.FIRST + 1;
 
-	private static final int REFRESH_DEVICES = Menu.FIRST;
-	private static final int ADD_DEVICE = Menu.FIRST + 1;
-	private static final int TYPE_NEXA_CODESWITCH = Menu.FIRST + 2;
-	private static final int TYPE_NEXA_SELFLEARNING_SWITCH = Menu.FIRST + 3;
+	private static final int TYPE_NEXA_CODESWITCH = Menu.FIRST + 5;
+	private static final int TYPE_NEXA_SELFLEARNING_SWITCH = Menu.FIRST + 6;
 
-	public static final int REQUEST_CREATE_CODESWITCH = 0;
+	private static final int INTENT_TYPE_ADD_CONTROLLER = 0;
+	private static final int INTENT_TYPE_EDIT_CONTROLLER = 1;
+	public static final int INTENT_TYPE_CREATE_CODESWITCH = 2;
+
+	private static final int SLIDE_OFF = 0;
+	private static final int SLIDE_RIGHT = 1;
+	private static final int SLIDE_LEFT = 2;
 
 	// public static final String address = "83.227.184.76:8000";
-	public static final String address = "192.168.1.10:8000";
+	// public static final String address = "192.168.1.10:8000";
 
 	/* Swipe related stuff */
 	private static final int SWIPE_MIN_DISTANCE = 120;
@@ -72,92 +70,119 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 
 	private GestureDetector gestureDetector;
 
-	private ListView activeList;
-
-	private ListView inactiveList;
+	// private ListView activeList;
+	// private ListView inactiveList;
 
 	private List<Controller> controllers;
-	private int currentController;
-	private int numControllers;
+	private int currentController = -1;
+	private int numControllers = 0;
 
 	private TellstickDbAdapter dbAdapter;
+
+	// private View activeEmptyLabel;
+	// private View inactiveEmptyLabel;
+
+	private LinearLayout activeLayout;
+	private LinearLayout inactiveLayout;
+
+	private Handler handler;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.v("tellremote", "onCreate!");
+		handler = new Handler();
 		dbAdapter = new TellstickDbAdapter(this);
 		dbAdapter.open();
-		
-//		dbAdapter.insertController("Test", "http://192.168.1.104:8001", "test",
-//				"test");
+
+		// dbAdapter.insertController("Test", "http://192.168.1.104:8001",
+		// "test",
+		// "test");
 		controllers = dbAdapter.getAllControllers();
-//		for (Controller controller : controllers) {
-//			dbAdapter.removeController(controller.getId());
-//		}
-//		controllers.clear();
+		// for (Controller controller : controllers) {
+		// dbAdapter.removeController(controller.getId());
+		// }
+		// controllers.clear();
 		dbAdapter.close();
-		currentController = 0;
-//		if (controllers.isEmpty())
-//			Log.v("tellremote", "empty controllers");
-//		int i = 1;
-//		for (Controller controller : controllers) {
-//			ArrayList<Device> myDevices = new ArrayList<Device>();
-//			Random generator = new Random(19580427);
-//			int num = generator.nextInt(6) + 1;
-//			for (int y = 1; y <= num; y++) {
-//				Random r = new Random();
-//				String token = Long.toString(Math.abs(r.nextLong()), 36);
-//				myDevices.add(new Device(y, token, DeviceCommand.OFF,
-//						new ArrayList<Integer>()));
-//			}
-//			Log.v("tellremote", myDevices.toString());
-//			controller.setDevices(myDevices);
-//			Log.v("tellremote", controller.getName());
-//			i++;
-//		}
+		// currentController = -1;
+		// if (controllers.isEmpty())
+		// Log.v("tellremote", "empty controllers");
+		// int i = 1;
+		// for (Controller controller : controllers) {
+		// ArrayList<Device> myDevices = new ArrayList<Device>();
+		// Random generator = new Random(19580427);
+		// int num = generator.nextInt(6) + 1;
+		// for (int y = 1; y <= num; y++) {
+		// Random r = new Random();
+		// String token = Long.toString(Math.abs(r.nextLong()), 36);
+		// myDevices.add(new Device(y, token, DeviceCommand.OFF,
+		// new ArrayList<Integer>()));
+		// }
+		// Log.v("tellremote", myDevices.toString());
+		// controller.setDevices(myDevices);
+		// Log.v("tellremote", controller.getName());
+		// i++;
+		// }
 		numControllers = controllers.size();
+		Log.v("tellremote", "Size of controllers = " + numControllers);
 		gestureDetector = new GestureDetector(this);
 
 		setContentView(R.layout.main);
+		activeLayout = (LinearLayout) findViewById(R.id.layout1);
+		inactiveLayout = (LinearLayout) findViewById(R.id.layout2);
 
-		inactiveList = (ListView) findViewById(R.id.secondListView);
-		Log.v("tellremote", inactiveList.getClass().getCanonicalName());
-		activeList = (ListView) findViewById(android.R.id.list);
+		// activeEmptyLabel = findViewById(R.id.emptyLabel1);
+		// inactiveEmptyLabel = findViewById(R.id.emptyLabel2);
+		// activeEmptyLabel.setVisibility(View.INVISIBLE);
+		// inactiveEmptyLabel.setVisibility(View.INVISIBLE);
+
+		ListView activeList = (ListView) activeLayout.findViewById(R.id.list);
+		ListView inactiveList = (ListView) inactiveLayout.findViewById(R.id.list);
 		activeList.setOnTouchListener(new OnTouchListener() {
 
 			public boolean onTouch(View v, MotionEvent event) {
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
+		registerForContextMenu(activeList);
+		registerForContextMenu(inactiveList);
 
 		// devices = getDevices();
 
 		// Log.v("tellremote", devices.toString());
 		int resID = R.layout.device_item;
 
-		int controllerIndex = 0;
-		if (savedInstanceState != null)
-			savedInstanceState.getInt("controller", 0);
+		if (savedInstanceState != null) {
+			currentController = savedInstanceState.getInt("controller", 0);
+			Log.v("tellremote", "Using controller " + currentController);
+		} else {
+			currentController = 0;
+			Log.v("tellremote", "savedInstanceState is null, defaulting to controller 0");
+		}
 		if (controllers.isEmpty()) {
 			/* Do something clever */
-
+			Log.v("tellremote", "No controller exists.");
 		} else {
 			Controller controller;
-			if (controllerIndex > controllers.size() - 1) {
+			if (currentController > controllers.size() - 1) {
 				/*
 				 * We have controllers but the last used controller has been
 				 * removed, default to first
 				 */
+				Log.v("tellremote", "Current controller does not exist. Defaulting to 0");
 				controller = controllers.get(0);
 			} else {
 				/* Use previously used controller */
-				controller = controllers.get(controllerIndex);
+				controller = controllers.get(currentController);
+				Log.v("tellremote", "Previous controller used.");
 			}
-			controller.refresh();
-			aa = new DeviceAdapter(this, resID, controller.getDevices());
-			activeList.setAdapter(aa);
-			registerForContextMenu(activeList);
+			showCurrentController(SLIDE_OFF, true);
+			// Response response = controller.refresh();
+			// if (!response.isOk())
+			// showErrorDialog(response);
+			// aa = new DeviceAdapter(this, resID, controller.getDevices());
+			// activeList.setAdapter(aa);
 		}
 
 		viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
@@ -165,12 +190,9 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		// viewFlipper.getCurrentView()
 		// USE THIS INSTEAD: viewFlipper.setInAnimation(context, resourceID)
 		slideLeftIn = AnimationUtils.loadAnimation(this, R.anim.slide_left_in);
-		slideLeftOut = AnimationUtils
-				.loadAnimation(this, R.anim.slide_left_out);
-		slideRightIn = AnimationUtils
-				.loadAnimation(this, R.anim.slide_right_in);
-		slideRightOut = AnimationUtils.loadAnimation(this,
-				R.anim.slide_right_out);
+		slideLeftOut = AnimationUtils.loadAnimation(this, R.anim.slide_left_out);
+		slideRightIn = AnimationUtils.loadAnimation(this, R.anim.slide_right_in);
+		slideRightOut = AnimationUtils.loadAnimation(this, R.anim.slide_right_out);
 
 	}
 
@@ -178,29 +200,38 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		// Create and add new menu items.
-		MenuItem itemRefresh = menu.add(0, REFRESH_DEVICES, Menu.NONE,
-				R.string.refresh);
-		SubMenu menuAdd = menu.addSubMenu(0, ADD_DEVICE, Menu.NONE,
-				R.string.new_device);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.tellstickmenu, menu);
 
-		/* TEMPORARY */
-		MenuItem mi = menu.add(2, TYPE_NEXA_SELFLEARNING_SWITCH + 1, Menu.NONE,
-				"Add Controller");
-		mi.setIcon(R.drawable.ic_menu_add);
-
-		menuAdd.add(0, TYPE_NEXA_CODESWITCH, Menu.NONE,
-				R.string.nexa_codeswitch);
-		menuAdd.add(1, TYPE_NEXA_SELFLEARNING_SWITCH, Menu.NONE,
-				R.string.nexa_selflearning_switch);
-
-		// Assign icons
-		itemRefresh.setIcon(R.drawable.ic_menu_refresh);
-		menuAdd.setIcon(R.drawable.ic_menu_add);
-
-		// Allocate shortcuts to each of them.
-		itemRefresh.setShortcut('0', 'r');
-		// menuAdd.setShortcut('1', 'a');
+		// // Create and add new menu items.
+		// MenuItem itemRefresh = menu.add(0, REFRESH_DEVICES, Menu.NONE,
+		// R.string.refresh);
+		// SubMenu menuAdd = menu.addSubMenu(0, ADD_DEVICE, Menu.NONE,
+		// R.string.new_device);
+		//
+		// /* TEMPORARY */
+		// MenuItem mi = menu.add(2, ADD_CONTROLLER, Menu.NONE,
+		// "Add Controller");
+		// mi.setIcon(R.drawable.ic_menu_add);
+		//
+		// mi = menu.add(2, REMOVE_CONTROLLER, Menu.NONE, "Remove Controller");
+		// mi.setIcon(R.drawable.ic_menu_delete);
+		//
+		// mi = menu.add(2, EDIT_CONTROLLER, Menu.NONE, "Edit Controller");
+		// mi.setIcon(R.drawable.ic_menu_edit);
+		//
+		// menuAdd.add(0, TYPE_NEXA_CODESWITCH, Menu.NONE,
+		// R.string.nexa_codeswitch);
+		// menuAdd.add(1, TYPE_NEXA_SELFLEARNING_SWITCH, Menu.NONE,
+		// R.string.nexa_selflearning_switch);
+		//
+		// // Assign icons
+		// itemRefresh.setIcon(R.drawable.ic_menu_refresh);
+		// menuAdd.setIcon(R.drawable.ic_menu_add);
+		//
+		// // Allocate shortcuts to each of them.
+		// itemRefresh.setShortcut('0', 'r');
+		// // menuAdd.setShortcut('1', 'a');
 
 		return true;
 	}
@@ -209,24 +240,64 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 
-		Log.v("tellremote", "Menu clicked!");
-		// int index = getListView().getSelectedItemPosition();
-
 		switch (item.getItemId()) {
-		case (REFRESH_DEVICES):
-			controllers.get(currentController).refresh();
-			aa.notifyDataSetChanged();
+		case R.id.refreshDevices:
+			if (currentController != -1) {
+				refreshCurrentController();
+			}
 			return true;
 
-		case (TYPE_NEXA_CODESWITCH):
+		case TYPE_NEXA_CODESWITCH:
 			Intent myIntent = new Intent(this, EditCodeswitch.class);
-			myIntent.putExtra("REQUEST_CODE", REQUEST_CREATE_CODESWITCH);
-			startActivityForResult(myIntent, REQUEST_CREATE_CODESWITCH);
+			myIntent.putExtra("REQUEST_CODE", INTENT_TYPE_CREATE_CODESWITCH);
+			startActivityForResult(myIntent, INTENT_TYPE_CREATE_CODESWITCH);
 			return true;
 
-		case (TYPE_NEXA_SELFLEARNING_SWITCH + 1):
-			Intent i = new Intent(this, EditController.class);
-			startActivityForResult(i, 911);
+		case R.id.addController:
+			Intent addControllerIntent = new Intent(this, EditController.class);
+			startActivityForResult(addControllerIntent, INTENT_TYPE_ADD_CONTROLLER);
+			return true;
+
+		case R.id.editController:
+			Intent editControllerIntent = new Intent(this, EditController.class);
+			Controller controller = controllers.get(currentController);
+			editControllerIntent.putExtra("name", controller.getName());
+			editControllerIntent.putExtra("uri", controller.getUri());
+			editControllerIntent.putExtra("username", controller.getUsername());
+			editControllerIntent.putExtra("password", controller.getPassword());
+			editControllerIntent.putExtra("identifier", controller.getId());
+			startActivityForResult(editControllerIntent, INTENT_TYPE_EDIT_CONTROLLER);
+			return true;
+
+		case R.id.removeController:
+			new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Remove controller").setMessage(
+					"Do you really want to remove this controller?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+				public void onClick(DialogInterface dialog, int which) {
+					dbAdapter.open();
+					Controller controller = controllers.get(currentController);
+					dbAdapter.removeController(controller.getId());
+					dbAdapter.close();
+					controller.dispose();
+					controllers.remove(currentController);
+					aa.notifyDataSetChanged();
+					numControllers--;
+					if (numControllers == 0) {
+						Log.v("tellremote", "No more controllers");
+						// Do something useful
+					} else {
+						if (currentController == 0) {
+							showCurrentController(SLIDE_RIGHT, false);
+						} else {
+							currentController--;
+							showCurrentController(SLIDE_LEFT, false);
+						}
+					}
+
+				}
+
+			}).setNegativeButton("No", null).show();
+
 			return true;
 		}
 
@@ -234,8 +305,7 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		Log.v("tellremote", "onCreateContextMenu");
 
 		ListView lw = (ListView) findViewById(android.R.id.list);
@@ -251,8 +321,7 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		Log.v("tellremote", "onContextItemSelected");
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case DELETE_ID:
 			AdapterView.AdapterContextMenuInfo menuInfo;
@@ -260,7 +329,9 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 			int index = menuInfo.position;
 			Device device = aa.getItem(index);
 			Log.v("tellremote", "delete device " + device.getName());
-			deleteDevice(device);
+			if (controllers.get(currentController).delete(device)) {
+				aa.notifyDataSetChanged();
+			}
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -270,13 +341,11 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Log.v("tellremote", String.valueOf(resultCode));
+		Log.v("tellremote", "Result code = " + String.valueOf(resultCode) + ", requestcode = " + requestCode);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
-			case REQUEST_CREATE_CODESWITCH:
-				if (data.hasExtra("name") && data.hasExtra("model")
-						&& data.hasExtra("protocol") && data.hasExtra("house")
-						&& data.hasExtra("unit")) {
+			case INTENT_TYPE_CREATE_CODESWITCH:
+				if (data.hasExtra("name") && data.hasExtra("model") && data.hasExtra("protocol") && data.hasExtra("house") && data.hasExtra("unit")) {
 					String name = data.getCharSequenceExtra("name").toString();
 					String model = data.getStringExtra("model");
 					String protocol = data.getStringExtra("protocol");
@@ -289,13 +358,11 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("house", house);
 					params.put("unit", String.valueOf(unit));
-					Device retval = controllers.get(currentController)
-							.createDevice(name, model, protocol, params);
+					Device retval = controllers.get(currentController).createDevice(name, model, protocol, params);
 					if (retval != null) {
 						aa.notifyDataSetChanged();
 					}
-					Log.v("tellremote", "createDevice returned "
-							+ String.valueOf(retval));
+					Log.v("tellremote", "createDevice returned " + String.valueOf(retval));
 				}
 				Log.v("tellremote", String.valueOf(data.hasExtra("unit")));
 				Integer unit = data.getIntExtra("unit", -1);
@@ -305,147 +372,73 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 					Log.v("tellremote", "unit = " + unit);
 				break;
 
-			case 911:
-				if (data.hasExtra("name") && data.hasExtra("uri")
-						&& data.hasExtra("apikey")) {
+			case INTENT_TYPE_ADD_CONTROLLER:
+			case INTENT_TYPE_EDIT_CONTROLLER:
+				if (data.hasExtra("name") && data.hasExtra("uri") && data.hasExtra("username") && data.hasExtra("password")) {
 					String name = data.getStringExtra("name");
 					String uri = data.getStringExtra("uri");
 					String username = data.getStringExtra("username");
 					String password = data.getStringExtra("password");
 
-					TellstickDbAdapter dbAdapter = new TellstickDbAdapter(this);
-					dbAdapter.open();
-					long identifier = dbAdapter.insertController(name, uri,
-							username, password);
-					if (identifier != -1) {
-						Controller controller = dbAdapter
-								.getController(identifier);
-						controllers.add(controller);
-						currentController = controllers.indexOf(controller);
-						numControllers = controllers.size();
-						showCurrentController(true)
-					} else {
-						Log
-								.e("tellremote",
-										"Un error occurred while inserting information into database.");
+					if (requestCode == INTENT_TYPE_ADD_CONTROLLER) {
+						dbAdapter.open();
+						long identifier = dbAdapter.insertController(name, uri, username, password);
+						dbAdapter.close();
+						Log.v("tellremote", "insertController returned " + identifier);
+						if (identifier != -1) {
+							Controller controller = dbAdapter.getController(identifier);
+							controllers.add(controller);
+							currentController = controllers.indexOf(controller);
+							numControllers = controllers.size();
+						} else {
+							Log.e("tellremote", "An error occurred while inserting information into database.");
+						}
+					} else if (requestCode == INTENT_TYPE_EDIT_CONTROLLER) {
+						long identifier = data.getLongExtra("identifier", -1);
+						if (identifier != -1) {
+							dbAdapter.open();
+							Log.v("tellremote", "name = " + name);
+							if (dbAdapter.updateController(identifier, name, uri, username, password)) {
+								Controller controller = dbAdapter.getController(identifier);
+								dbAdapter.close();
+								controllers.add(currentController, controller);
+							} else {
+								dbAdapter.close();
+								// TODO: show error
+								return;
+							}
+						}
 					}
-					Cursor cursor = dbAdapter.getAllControllersCursor();
-					cursor.requery();
-
-					if (cursor.moveToFirst()) {
-						do {
-							String name1 = cursor
-									.getString(cursor
-											.getColumnIndex(TellstickDbAdapter.KEY_NAME));
-							String uri1 = cursor
-									.getString(cursor
-											.getColumnIndex(TellstickDbAdapter.KEY_URI));
-							String username1 = cursor
-									.getString(cursor
-											.getColumnIndex(TellstickDbAdapter.KEY_USERNAME));
-							String password1 = cursor
-									.getString(cursor
-											.getColumnIndex(TellstickDbAdapter.KEY_PASSWORD));
-							Log.v("tellremote", "Found controller " + name1
-									+ ", " + uri1 + ", " + username1 + ", "
-									+ password1);
-						} while (cursor.moveToNext());
-					}
-					cursor.deactivate();
-					dbAdapter.close();
-
+					showCurrentController(SLIDE_OFF, true);
 				}
 
 				break;
+
 			}
 		}
 	}
 
+	private void showErrorDialog(Response response) {
+		new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Error").setMessage(
+				"(" + response.getResponseCode() + ") " + response.getErrorMsg()).setNeutralButton("OK", null).show();
+	}
+
 	public void turnOn(View v) {
+		ListView activeList = (ListView) activeLayout.findViewById(R.id.list);
 		int itemPosition = activeList.getPositionForView(v);
 		Device device = aa.getItem(itemPosition);
-		boolean result = controllers.get(currentController).turnOn(device);
-		Log.v("tellremote", "Turn on device: " + String.valueOf(result));
-
-		// get the row the clicked button is in
-
-		// RelativeLayout vwParentRow = (RelativeLayout) v.getParent();
-		/*
-		 * get the 2nd child of our ParentRow (remember in java that arrays
-		 * start with zero, so our 2nd child has an index of 1)
-		 */
-
-		// View childAt = vwParentRow.getChildAt(0);
-		// Log.v("tellremote", childAt.getClass().getCanonicalName());
-		// Button btnChild = (Button) vwParentRow.getChildAt(1);
-		//
-		// // now set the text of our button
-		// btnChild.setText("I've been clicked!");
-		//
-		// // .. and change the colour of our row
-		// int c = Color.CYAN;
-		//
-		// vwParentRow.setBackgroundColor(c);
-
-		// and redraw our row to reflect our colour change
-		// vwParentRow.refreshDrawableState();
+		Response response = controllers.get(currentController).turnOn(device);
+		if (!response.isOk())
+			showErrorDialog(response);
 	}
 
 	public void turnOff(View v) {
+		ListView activeList = (ListView) activeLayout.findViewById(R.id.list);
 		int itemPosition = activeList.getPositionForView(v);
 		Device device = aa.getItem(itemPosition);
-		boolean result = controllers.get(currentController).turnOff(device);
-		Log.v("tellremote", "Turn off device: " + String.valueOf(result));
-	}
-
-	private boolean deleteDevice(Device device) {
-		// TellRemoteServerHandler handler = new TellRemoteServerHandler();
-		// try {
-		// SAXParser parser = factory.newSAXParser();
-		// HttpClient client = new DefaultHttpClient();
-		// String url = "http://" + address + "/devices/" + device.getId()
-		// + "?apikey=520397fa-5357-4285-b37a-5dad54702a01";
-		// HttpDelete request = new HttpDelete(url);
-		// HttpResponse response = client.execute(request);
-		// parser.parse(response.getEntity().getContent(), handler);
-		// if (response.getStatusLine().getStatusCode() == 200) {
-		// devices.remove(device);
-		// aa.notifyDataSetChanged();
-		// return true;
-		// } else
-		// return false;
-		// } catch (Exception e) {
-		// Log.v("tellremote", "Exception " + e.getMessage());
-		// e.printStackTrace();
-		// return false;
-		// }
-		return false;
-	}
-
-	private boolean refresh() {
-		// TellRemoteServerHandler handler = new TellRemoteServerHandler();
-		// try {
-		// SAXParser parser = factory.newSAXParser();
-		// HttpClient client = new DefaultHttpClient();
-		// String url = "http://" + address
-		// + "/devices/?apikey=520397fa-5357-4285-b37a-5dad54702a01";
-		// HttpGet request = new HttpGet(url);
-		// HttpResponse response = client.execute(request);
-		// parser.parse(response.getEntity().getContent(), handler);
-		// if (response.getStatusLine().getStatusCode() == 200) {
-		// devices.clear();
-		// devices.addAll(handler.getDevices());
-		// aa.notifyDataSetChanged();
-		// return true;
-		// } else
-		// return false;
-		// } catch (Exception e) {
-		// Log.v("tellremote", "Exception " + e.getMessage());
-		// e.printStackTrace();
-		// return false;
-		// }
-		return false;
-
+		Response response = controllers.get(currentController).turnOff(device);
+		if (!response.isOk())
+			showErrorDialog(response);
 	}
 
 	@Override
@@ -457,17 +450,16 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		return false;
 	}
 
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		try {
 			if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
 				return false;
 			// right to left swipe
-			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+			if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.v("tellremote", "fling next");
 				handleNext();
-			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-					&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+			} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+				Log.v("tellremote", "fling previous");
 				handlePrevious();
 
 			}
@@ -480,8 +472,7 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 	public void onLongPress(MotionEvent e) {
 	}
 
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 		return false;
 	}
 
@@ -492,70 +483,118 @@ public class Tellstick extends ListActivity implements OnGestureListener {
 		return false;
 	}
 
-	private void showCurrentController(boolean slideToRight)  {
-		Controller controller = controllers.get(currentController);
-		View emptyLabel = findViewById(R.id.emptyLabel);
-		if (controller != null && !controller.getDevices().isEmpty()) {
-			emptyLabel.setVisibility(TextView.INVISIBLE);
-			int resID = R.layout.device_item;
-			aa = new DeviceAdapter(this, resID, controller.getDevices());
-			inactiveList.setAdapter(aa);
-			ListView tmp = activeList;
-			activeList = inactiveList;
-			inactiveList = tmp;
-		} else
-			emptyLabel.setVisibility(TextView.VISIBLE);
+	private void refreshCurrentController() {
+		((TextView) activeLayout.findViewById(R.id.emptyLabel)).setVisibility(TextView.INVISIBLE);
 
-		if(slideToRight) {
+		final ProgressDialog pd = ProgressDialog.show(this, "Refreshing devices", "Please wait while devices are being fetched.");
+
+		new Thread() {
+			public void run() {
+				Controller controller = controllers.get(currentController);
+				final Response response = controller.refresh();
+				handler.post(new Runnable() {
+					public void run() {
+						// Creating dialogs and modifying the data sets needs to
+						// be done on the GUI thread.
+						if (!response.isOk())
+							showErrorDialog(response);
+						aa.notifyDataSetChanged();
+					}
+				});
+				pd.dismiss();
+			}
+		}.start();
+
+	}
+
+	private void showCurrentController(int slide, boolean forceRefresh) {
+		final Controller controller = controllers.get(currentController);
+
+		aa = new DeviceAdapter(this, controller.getDevices(), this);
+		if (slide == SLIDE_LEFT || slide == SLIDE_RIGHT) {
+			ListView inactiveList = (ListView) inactiveLayout.findViewById(R.id.list);
+
+			/* Toggle active - inactive */
+			inactiveList.setAdapter(aa);
+			LinearLayout tmp = activeLayout;
+			activeLayout = inactiveLayout;
+			inactiveLayout = tmp;
+
+		} else {
+			ListView activeList = (ListView) activeLayout.findViewById(R.id.list);
+
+			activeList.setAdapter(aa);
+			// if (controller != null && !controller.getDevices().isEmpty())
+			// ((TextView)
+			// activeLayout.findViewById(R.id.emptyLabel)).setVisibility(TextView.INVISIBLE);
+			// else
+			// ((TextView)
+			// activeLayout.findViewById(R.id.emptyLabel)).setVisibility(TextView.VISIBLE);
+		}
+
+		TextView header = (TextView) activeLayout.findViewById(R.id.listHeader);
+		header.setText(controller.getName());
+
+		if (slide == SLIDE_RIGHT) {
 			/* Slide in the previously inactive view */
 			viewFlipper.setInAnimation(slideLeftIn);
 			viewFlipper.setOutAnimation(slideLeftOut);
 			viewFlipper.showNext();
-		} else {
+		} else if (slide == SLIDE_LEFT) {
 			/* Slide in the previously inactive view */
 			viewFlipper.setInAnimation(slideRightIn);
 			viewFlipper.setOutAnimation(slideRightOut);
 			viewFlipper.showPrevious();
 		}
 
+		if (forceRefresh || !controller.isRefreshed()) {
+			refreshCurrentController();
+		}
+
+		if (controller != null && !controller.getDevices().isEmpty())
+			((TextView) activeLayout.findViewById(R.id.emptyLabel)).setVisibility(TextView.INVISIBLE);
+		else
+			((TextView) activeLayout.findViewById(R.id.emptyLabel)).setVisibility(TextView.VISIBLE);
+
 	}
 
 	private void handleNext() {
+		if (numControllers < 2)
+			return;
+
 		currentController++;
 		if (currentController >= numControllers)
 			currentController = 0;
 
-		showCurrentController(true);
+		showCurrentController(SLIDE_RIGHT, false);
 	}
 
 	private void handlePrevious() {
+		if (numControllers < 2)
+			return;
+
 		currentController--;
 		if (currentController < 0)
 			currentController = numControllers - 1;
-	
-		showCurrentController(false);
+
+		showCurrentController(SLIDE_LEFT, false);
 	}
 
-	private List<Device> getDevices() {
-		Log.v("tellremote", "Connecting...");
-		factory = SAXParserFactory.newInstance();
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+	}
 
-		TellRemoteServerHandler handler = new TellRemoteServerHandler();
-		try {
-			SAXParser parser = factory.newSAXParser();
-			HttpClient client = new DefaultHttpClient();
-			String url = "http://" + address
-					+ "/devices/?apikey=520397fa-5357-4285-b37a-5dad54702a01";
-			HttpGet request = new HttpGet(url);
-			HttpResponse response = client.execute(request);
-			Log.v("tellremote", "parsing...");
-			parser.parse(response.getEntity().getContent(), handler);
+	public void onStartTrackingTouch(SeekBar seekBar) {
+	}
 
-		} catch (Exception e) {
-			Log.v("tellremote", "Exception " + e.getMessage());
-			e.printStackTrace();
-		}
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		ListView activeList = (ListView) activeLayout.findViewById(R.id.list);
+		int itemPosition = activeList.getPositionForView(seekBar);
+		Device device = aa.getItem(itemPosition);
+		Log.v("tellremote", "dimming " + device.getName());
+		int level = seekBar.getProgress() * 255 / 100;
+		Response response = controllers.get(currentController).dim(device, level);
+		if (!response.isOk())
+			showErrorDialog(response);
 
-		return handler.getDevices();
 	}
 }
