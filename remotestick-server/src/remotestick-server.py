@@ -142,7 +142,10 @@ def read_device(identity):
     model = libtelldus.tdGetModel(identity)
     methods = libtelldus.tdMethods(identity, ALL_METHODS)
     element = "<device id=\"" + str(identity) + "\">\n\t\t<name>" + name + "</name>\n\t\t<protocol>" + protocol + "</protocol>\n\t\t<model>" + model + "</model>\n"
-    element += "\t\t<lastcmd>" + ("ON" if lastcmd == 1 else "OFF") + "</lastcmd>\n"
+    if lastcmd == 1:
+        element += "\t\t<lastcmd>ON/lastcmd>\n"        
+    else:
+        element += "\t\t<lastcmd>OFF</lastcmd>\n"
     if methods & TELLSTICK_BELL:
         element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_BELL) + "\">" + "TELLSTICK_BELL</supportedMethod>\n"
     if methods & TELLSTICK_TOGGLE:
