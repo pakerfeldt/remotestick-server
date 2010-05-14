@@ -25,3 +25,13 @@ Starting remotestick-server is as simple as (although not recommended, see below
 By default, no authentication will be required (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8080. Only Basic Authentication (HTTP) currently supported.
 You should at least set a username and password, requiring client authentication:
     remotestick-server.py --username MyUsername --password MyPassword
+
+## Troubleshooting
+
+### Linux
+Depending on where the telldus-core library is installed on your system you may have to define the environment variable LD_LIBRARY_PATH to include the directory where telldus-core is located.
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/telldus/bin
+
+### Windows
+If TelldusCenter is installed remotestick-server will have no problem locating the library. Although you might get an error saying ftdxx library is not found. In such cases add the Telldus folder to the PATH environment variable.
+    set PATH=%PATH%;"C:\Program files\Telldus"
