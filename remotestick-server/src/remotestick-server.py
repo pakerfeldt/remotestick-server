@@ -82,10 +82,13 @@ encodedauth = None
 libtelldus = None
 
 def loadlibrary(libraryname=None):
-    if libraryname == None and platform == "darwin":
-        libraryname = "TelldusCore"
-    elif libraryname == None:
-        libraryname = "libtelldus-core"
+    if libraryname == None:
+        if platform == "darwin" or platform == "win32":
+            libraryname = "TelldusCore"
+        elif platform == "linux2":
+            libraryname = "telldus-core"
+        else:
+            libraryname = "TelldusCore"
         
     ret = util.find_library(libraryname)
     
