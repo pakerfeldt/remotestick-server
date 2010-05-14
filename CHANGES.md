@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-05-14 - pakerfeldt (0.2)
+ * Fixed library handling to support win32 and linux
+
 ## 2010-05-14 - pakerfeldt (0.1)
  * First version released.
  * Supports listing device(s)
