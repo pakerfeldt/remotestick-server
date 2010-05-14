@@ -104,7 +104,7 @@ def loadlibrary(libraryname=None):
 
 def errmsg(x):
     return {
-        100: "API key could not be verified",
+        100: "Authentication failed",
         101: "Unsupported format",
         201: "Name not supplied",
         202: "Model not supplied",
@@ -274,12 +274,14 @@ def change_device(id, format):
     protocol = request.POST.get('protocol', '').strip()
     model = request.POST.get('model', '').strip()
     if not name:
-        return err(format, 400, request_str, 101)
-        
-    libtelldus.tdSetName(int(id), name)
-    libtelldus.tdSetProtocol(int(id), protocol)
-    libtelldus.tdSetModel(int(id), model)
+        libtelldus.tdSetName(int(id), name)
     
+    if not model:
+        libtelldus.tdSetModel(int(id), model)
+    
+    if not protocol:
+        libtelldus.tdSetProtocol(int(id), protocol)
+          
     retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     try:
         retval += read_device(int(id))
@@ -342,7 +344,7 @@ def dim_device(id, level, format):
 
     try:
         identity = int(id)
-        dimlevel = chr(int(level))
+        dimlevel = int(round(int(level)*2.55))
     except ValueError:
         return err(format, 400, request_str, 210)
 
