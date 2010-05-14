@@ -12,8 +12,8 @@ Either:
 
 ## Getting it
 
- * A stable version of remotestick-server is found here [INSERT LINK] (recommended).
- * A bleeding edge version of remotestick-server can be grabbed from the github repository under remotestick-server/.
+ * A stable version of remotestick-server is found here http://github.com/pakerfeldt/remotestick/downloads (recommended).
+ * A bleeding edge version of remotestick-server can be grabbed from the github repository remotestick.
 
 ## Using it
 The -? flag will give you help about available command line arguments:
