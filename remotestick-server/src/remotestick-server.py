@@ -373,7 +373,7 @@ def usage():
     print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
     print "-p, --post\t\tport which the server will listen on, default to 8080"
     print "-u, --username\t\tusername used for client authentication"
-    print "-p, --password\t\tpassword used for client authentication"
+    print "-s, --password\t\tpassword used for client authentication"
     print "-l, --library\t\tname of telldus-core library"
 
 def main():
