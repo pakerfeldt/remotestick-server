@@ -102,6 +102,7 @@ def loadlibrary(libraryname=None):
     libtelldus.tdGetProtocol.restype = c_char_p
     libtelldus.tdGetModel.restype = c_char_p
     libtelldus.tdGetErrorString.restype = c_char_p
+    libtelldus.tdLastSentValue.restype = c_char_p
 
     return ret, libraryname
 
@@ -144,11 +145,15 @@ def read_device(identity):
     protocol = libtelldus.tdGetProtocol(identity)
     model = libtelldus.tdGetModel(identity)
     methods = libtelldus.tdMethods(identity, ALL_METHODS)
+    lastValue = libtelldus.tdLastSentValue(identity)
     element = "<device id=\"" + str(identity) + "\">\n\t\t<name>" + name + "</name>\n\t\t<protocol>" + protocol + "</protocol>\n\t\t<model>" + model + "</model>\n"
     if lastcmd == 1:
         element += "\t\t<lastcmd>ON</lastcmd>\n"        
     else:
         element += "\t\t<lastcmd>OFF</lastcmd>\n"
+    if lastValue != None and lastValue != "":
+        element += "\t\t<lastvalue>" + str(lastValue) + "</lastvalue>\n"
+    
     if methods & TELLSTICK_BELL:
         element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_BELL) + "\">" + "TELLSTICK_BELL</supportedMethod>\n"
     if methods & TELLSTICK_TOGGLE:
@@ -209,7 +214,7 @@ def new_device(format):
 
     protocol = request.POST.get('protocol', '').strip()
     if not protocol:
-            return err(format, 400, request_str, 203)
+        return err(format, 400, request_str, 203)
         
     rawParams = request.POST.get('parameters', '').strip()
     print rawParams
@@ -350,7 +355,8 @@ def dim_device(id, level, format):
 
     try:
         identity = int(id)
-        dimlevel = int(round(int(level)*2.55))
+        dimlevel = int(level)
+#        dimlevel = int(round(int(level)*2.55))
     except ValueError:
         return err(format, 400, request_str, 210)
 
@@ -362,7 +368,29 @@ def dim_device(id, level, format):
             return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
     else:
         return err(format, 400, request_str, 220)
+    
+@route('/devices/:id/learn\.:format', method='GET')
+def learn_device(id, format):
+    request_str = 'GET /devices/' + id + "/learn." + format
+    ok, response_code, error_code = pre_check(format, ["xml"])
+    if not ok:
+        return err(format, response_code, request_str, error_code)
+    set_content_type(format)
 
+    try:
+        identity = int(id)
+    except ValueError:
+        return err(format, 400, request_str, 210)
+    
+    if libtelldus.tdMethods(identity, TELLSTICK_LEARN) & TELLSTICK_LEARN:    
+        retval = libtelldus.tdLearn(identity)
+        if retval == 0:
+            return ""
+        else:
+            return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
+    else:
+        return err(format, 400, request_str, 220)
+    
 def usage():
     print "Usage: remotestick-server [OPTION]..."
     print "Expose tellstick services through RESTful services."

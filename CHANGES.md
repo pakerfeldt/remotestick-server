@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-XX-YY - pakerfeldt (0.x)
+ * Added Learn method.
+
 ## 2010-05-15 - pakerfeldt (0.3)
  * Fixed bug in XML output
 
