@@ -1,6 +1,6 @@
 # ChangeLog
 
-## 2010-XX-YY - pakerfeldt (0.x)
+## 2010-05-18 - pakerfeldt (0.3.1)
  * Added Learn method.
 
 ## 2010-05-15 - pakerfeldt (0.3)
