@@ -89,8 +89,9 @@ def loadlibrary(libraryname=None):
             libraryname = "telldus-core"
         else:
             libraryname = "TelldusCore"
-        
-    ret = util.find_library(libraryname)
+        ret = util.find_library(libraryname)
+    else:
+        ret = libraryname
     
     if ret == None:
         return (None, libraryname)
