@@ -396,11 +396,11 @@ def usage():
     print "Usage: remotestick-server [OPTION]..."
     print "Expose tellstick services through RESTful services."
     print ""
-    print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8080 where no authentication is required."
+    print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8422 where no authentication is required."
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
     print ""
     print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
-    print "-p, --post\t\tport which the server will listen on, default to 8080"
+    print "-p, --post\t\tport which the server will listen on, default to 8422"
     print "-u, --username\t\tusername used for client authentication"
     print "-s, --password\t\tpassword used for client authentication"
     print "-l, --library\t\tname of telldus-core library"
@@ -449,9 +449,9 @@ def main():
         encodedauth = "Basic " + b64encode(username + ":" + password)
         
     if (host == None and port == None):
-        run()
+        run(port="8422")
     elif host != None and port == None:
-        run(host=host)
+        run(host=host, port="8422")
     elif host == None and port != None:
         run(port=port)
     else:

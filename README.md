@@ -22,7 +22,7 @@ The -? flag will give you help about available command line arguments:
 Starting remotestick-server is as simple as (although not recommended, see below):
     remotestick-server.py
 
-By default, no authentication will be required (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8080. Only Basic Authentication (HTTP) currently supported.
+By default, no authentication will be required (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8422. Only Basic Authentication (HTTP) currently supported.
 You should at least set a username and password, requiring client authentication:
     remotestick-server.py --username MyUsername --password MyPassword
 

@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-07-21 - pakerfeldt (0.3.2)
+ * Changed default port to 8422.
+
 ## 2010-05-18 - pakerfeldt (0.3.1)
  * Added Learn method.
 
