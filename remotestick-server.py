@@ -25,6 +25,8 @@ from getopt import getopt, GetoptError
 from sys import argv, exit, platform
 from base64 import b64encode
 
+VERSION = "0.3.3"
+
 #Device methods
 TELLSTICK_TURNON = 1
 TELLSTICK_TURNOFF = 2
@@ -408,9 +410,12 @@ def usage():
     print "-s, --password\t\tpassword used for client authentication"
     print "-l, --library\t\tname of telldus-core library"
 
+def version():
+    print "remotestick-server v" + VERSION
+
 def main():
     try:
-        opts, args = getopt(argv[1:], "?h:p:u:s:l:", ["?", "host=", "port=", "username=", "password=", "library="])
+        opts, args = getopt(argv[1:], "?h:p:u:s:l:V", ["?", "host=", "port=", "username=", "password=", "library=", "version"])
     except GetoptError, err:
         print str(err)
         usage()
@@ -434,6 +439,9 @@ def main():
             password = a
         elif o in ("-l", "--library"):
             library = a
+        elif o in ("-V", "--version"):
+            version()
+            exit()
         elif o == '-?':
             usage()
             exit()

@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-07-25 - pakerfeldt (0.3.3)
+ * Fixed issue 11.
+
 ## 2010-07-21 - pakerfeldt (0.3.2)
  * Changed default port to 8422.
 
