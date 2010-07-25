@@ -20,7 +20,8 @@
 
 
 from bottle import route, run, response, request
-from ctypes import cdll, c_char_p, util, windll
+from ctypes import util
+from ctypes import *
 from getopt import getopt, GetoptError
 from sys import argv, exit, platform
 from base64 import b64encode
