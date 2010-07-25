@@ -20,7 +20,7 @@
 
 
 from bottle import route, run, response, request
-from ctypes import cdll, c_char_p, util
+from ctypes import cdll, c_char_p, util, windll
 from getopt import getopt, GetoptError
 from sys import argv, exit, platform
 from base64 import b64encode
@@ -97,7 +97,10 @@ def loadlibrary(libraryname=None):
         return (None, libraryname)
 
     global libtelldus
-    libtelldus = cdll.LoadLibrary(ret)
+    if platform == "win32":
+        libtelldus = windll.LoadLibrary(ret)
+    else:
+        libtelldus = cdll.LoadLibrary(ret)
     libtelldus.tdGetName.restype = c_char_p
     libtelldus.tdLastSentValue.restype = c_char_p
     libtelldus.tdGetProtocol.restype = c_char_p
