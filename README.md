@@ -1,7 +1,7 @@
 # remotestick-server
 
 ## What is it?
-remotestick-server exposes the Tellstick (see [Telldus Homepage](http://www.telldus.se) ) interface through RESTful services. remotestick-server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in XML format (support for JSON format is planned). It aims to fully reflect the capabilities of the libtelldus-core.
+RemoteStick server exposes the Tellstick (see [Telldus Homepage](http://www.telldus.se) ) interface through RESTful services. RemoteStick server uses the native library libtelldus-core to communicate with the Tellstick. It supports resource browsing and resource operations (like turning on/off a device). Responses are given in XML format (support for JSON format is planned). It aims to fully reflect the capabilities of the libtelldus-core.
 
 ## Prerequisites
 telldus-core need be installed. telldus-core is an open-source library developed by the very same company manufacturing the Tellstick, namely Telldus.
@@ -12,14 +12,14 @@ Either:
 
 ## Getting it
 
- * A stable version of remotestick-server is found here http://github.com/pakerfeldt/remotestick/downloads (recommended).
- * A bleeding edge version of remotestick-server can be grabbed from the github repository remotestick.
+ * A stable version of RemoteStick Server is found here http://github.com/pakerfeldt/remotestick/downloads (recommended).
+ * A bleeding edge version of RemoteStick Server can be grabbed from the github repository remotestick.
 
 ## Using it
 The -? flag will give you help about available command line arguments:
     remotestick-server.py -?
 
-Starting remotestick-server is as simple as (although not recommended, see below):
+Starting RemoteStick server is as simple as (although not recommended, see below):
     remotestick-server.py
 
 By default, no authentication will be required (making it possible for anyone to query your tellstick) and the RESTful services will listen for connections on your-hostname:8422. Only Basic Authentication (HTTP) currently supported.
@@ -33,5 +33,5 @@ Depending on where the telldus-core library is installed on your system you may 
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/telldus/bin
 
 ### Windows
-If TelldusCenter is installed remotestick-server will have no problem locating the library. Although you might get an error saying ftdxx library is not found. In such cases add the Telldus folder to the PATH environment variable.
-    set PATH=%PATH%;"C:\Program files\Telldus"
+If TelldusCenter is installed RemoteStick server will have no problem locating the library. Although you might get an error saying ftdxx library is not found. In such cases add the Telldus folder to the PATH environment variable.
+    set PATH=%PATH%;"C:\Program files\Telldus" or try running RemoteStick server using Telldus folder as working directory (i.e. stand in that directory when starting RemoteStick server).
