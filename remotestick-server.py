@@ -406,7 +406,7 @@ def usage():
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
     print ""
     print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
-    print "-p, --post\t\tport which the server will listen on, default to 8422"
+    print "-p, --port\t\tport which the server will listen on, default to 8422"
     print "-u, --username\t\tusername used for client authentication"
     print "-s, --password\t\tpassword used for client authentication"
     print "-l, --library\t\tname of telldus-core library"
