@@ -34,4 +34,5 @@ Depending on where the telldus-core library is installed on your system you may 
 
 ### Windows
 If TelldusCenter is installed RemoteStick server will have no problem locating the library. Although you might get an error saying ftdxx library is not found. In such cases add the Telldus folder to the PATH environment variable.
-    set PATH=%PATH%;"C:\Program files\Telldus" or try running RemoteStick server using Telldus folder as working directory (i.e. stand in that directory when starting RemoteStick server).
+    set PATH=%PATH%;"C:\Program files\Telldus" 
+or try running RemoteStick server using Telldus folder as working directory (i.e. stand in that directory when starting RemoteStick server).
