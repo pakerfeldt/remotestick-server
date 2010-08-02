@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-08-02 - pakerfeldt (0.3.4)
+ * Correct handling of authentication
+ 
 ## 2010-07-25 - pakerfeldt (0.3.3)
  * Fixed issue 11.
 
