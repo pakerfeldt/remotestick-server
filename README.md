@@ -62,4 +62,8 @@ or try running RemoteStick server using Telldus folder as working directory
 The current version of TelldusCenter for Mac OS X, 2.0.2, does only come with 32
 bit support meaning that it will not work (out of the box) if you got a 64 bit
 version of Python (which you do if you're running a 64 bit version of Mac OS X,
-i.e. Snow Leopard).
+i.e. Snow Leopard). The error you might get indicating this is:
+    OSError: dlopen(/Library/Frameworks/TelldusCore.framework/TelldusCore, 6):
+    no suitable image found.
+    Did find:/Library/Frameworks/TelldusCore.framework/TelldusCore: mach-o, but
+    wrong architecture
