@@ -63,7 +63,10 @@ The current version of TelldusCenter for Mac OS X, 2.0.2, does only come with 32
 bit support meaning that it will not work (out of the box) if you got a 64 bit
 version of Python (which you do if you're running a 64 bit version of Mac OS X,
 i.e. Snow Leopard). The error you might get indicating this is:
-    OSError: dlopen(/Library/Frameworks/TelldusCore.framework/TelldusCore, 6):
-    no suitable image found.
-    Did find:/Library/Frameworks/TelldusCore.framework/TelldusCore: mach-o, but
-    wrong architecture
+    OSError: dlopen(/Library/Frameworks/TelldusCore.framework/TelldusCore, 6): no suitable image found.
+    Did find:/Library/Frameworks/TelldusCore.framework/TelldusCore: mach-o, but wrong architecture
+You have two options. Run python in 32 bit mode (recommended):
+    arch -arch i386 python2.6 ./remotestick-server.py ...
+OR you could also re-compile a 64 bit version of TelldusCore. Although very much
+feasable it is complicated. For instructions, see:
+http://www.whyro.org/2010/02/14/java-interface-to-tellstick-in-snow-leopard/
