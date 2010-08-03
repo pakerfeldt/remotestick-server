@@ -24,8 +24,10 @@ from ctypes import *
 from getopt import getopt, GetoptError
 from sys import argv, exit, platform
 from base64 import b64encode
+import time
 
 VERSION = "0.3.4"
+API_VERSION = 1
 
 #Device methods
 TELLSTICK_TURNON = 1
@@ -37,7 +39,8 @@ TELLSTICK_LEARN = 32
 ALL_METHODS = TELLSTICK_TURNON | TELLSTICK_TURNOFF | TELLSTICK_BELL | TELLSTICK_TOGGLE | TELLSTICK_DIM | TELLSTICK_LEARN
 
 reqauth = True
-encodedauth = None
+username = None
+password = None
 libtelldus = None
 
 def loadlibrary(libraryname=None):
@@ -85,7 +88,7 @@ def errmsg(x):
 def err(format, responsecode, request, code, code_msg=None):
     response.status = responsecode
     if responsecode == 401:
-        response.header.add_header("WWW-Authenticate", "Basic realm=\"RemoteStick\"")
+        response.headers.append("WWW-Authenticate", "Basic realm=\"RemoteStick\"")
 
     if code_msg == None:
         code_msg = errmsg(code)
@@ -98,10 +101,10 @@ def err(format, responsecode, request, code, code_msg=None):
 def err_xml(request, msg):
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n\t<request>" + request + "</request>\n\t<error>" + msg + "</error>\n</hash>"
 
-def authenticate(encoded_base64):
-    global encodedauth
+def authenticate(requestUser, requestPassword):
+    global username, password
     if reqauth:
-        return encodedauth == encoded_base64
+        return (username == requestUser and password == requestPassword)
     else:
         return True
 
@@ -138,23 +141,23 @@ def read_device(identity):
 def pre_check(format, accepted_formats):
     if format not in accepted_formats:
         return False, 400, 101
-    
-    if not authenticate(request.authorization):
+    username, password = request.auth
+    if not authenticate(username, password):
         return False, 401, 100
     
     return True, None, None
 
-def set_content_type(format):
+def set_headers(format):
     if format == "xml":
-        response.content_type = 'text/xml; charset=UTF-8'
+        response.set_content_type('text/xml; charset=utf8')
+    response.headers.append("X-API-VERSION", str(API_VERSION))
 
-@route('/devices\.:format', method='GET')
+@route('/devices.:format', method='GET')
 def devices(format):
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, 'GET /devices.' + format, error_code)
-    set_content_type(format)
-
+    set_headers(format)
     result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<devices>\n"
     numDevices = libtelldus.tdGetNumberOfDevices()
     for i in range(numDevices):
@@ -162,28 +165,28 @@ def devices(format):
     result += "</devices>"
     return result
 
-@route('/devices\.:format', method='POST')
+@route('/devices.:format', method='POST')
 def new_device(format):
     request_str = 'POST /devices.' + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
     
     name = request.POST.get('name', '').strip()
+    print "Name: " + name
     if not name:
         return err(format, 400, request_str, 201)
-
-    model = request.POST.get('model', '').strip()
+    
+    model = request.POST.get('model', '')
     if not model:
         return err(format, 400, request_str, 202)
 
-    protocol = request.POST.get('protocol', '').strip()
+    protocol = request.POST.get('protocol', '')
     if not protocol:
         return err(format, 400, request_str, 203)
         
-    rawParams = request.POST.get('parameters', '').strip()
-    print rawParams
+    rawParams = request.POST.get('parameters', '')
     parameters = []
     if rawParams != None:
         for param in rawParams.split():
@@ -194,9 +197,9 @@ def new_device(format):
                 parameters.append(keyval)
 
     identity = libtelldus.tdAddDevice()
-    libtelldus.tdSetName(identity, name)
-    libtelldus.tdSetProtocol(identity, protocol)
-    libtelldus.tdSetModel(identity, model)
+    libtelldus.tdSetName(identity, name.strip())
+    libtelldus.tdSetProtocol(identity, protocol.strip())
+    libtelldus.tdSetModel(identity, model.strip())
     print parameters
     for param in parameters:
         libtelldus.tdSetDeviceParameter(identity, param[0], param[1])
@@ -205,13 +208,13 @@ def new_device(format):
     retval += read_device(identity)
     return retval
 
-@route('/devices/:id\.:format', method='GET')
+@route('/devices/:id.:format', method='GET')
 def get_device(id, format):
     request_str = 'GET /devices/' + id + "." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     try:
@@ -221,13 +224,13 @@ def get_device(id, format):
         return err(format, 400, request_str, 210)
 
 
-@route('/devices/:id\.:format', method='DELETE')
+@route('/devices/:id.:format', method='DELETE')
 def delete_device(id, format):
     request_str = 'DELETE /devices/' + id + "." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     try:
         retval = libtelldus.tdRemoveDevice(int(id))
@@ -239,13 +242,13 @@ def delete_device(id, format):
     else:
         return err(format, 400, request_str, 211)
 
-@route('/devices/:id\.:format', method='PUT')
+@route('/devices/:id.:format', method='PUT')
 def change_device(id, format):
     request_str = 'PUT /devices/' + id + "." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     name = request.POST.get('name', '').strip()
     protocol = request.POST.get('protocol', '').strip()
@@ -267,13 +270,13 @@ def change_device(id, format):
         return err(format, 400, request_str, 210)
     return ""
 
-@route('/devices/:id/on\.:format', method='GET')
+@route('/devices/:id/on.:format', method='GET')
 def turnon_device(id, format):
     request_str = 'GET /devices/' + id + "/on." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
     
     try:
         identity = int(id)
@@ -289,13 +292,13 @@ def turnon_device(id, format):
     else:
         return err(format, 400, request_str, 220)
 
-@route('/devices/:id/off\.:format', method='GET')
+@route('/devices/:id/off.:format', method='GET')
 def turnoff_device(id, format):
     request_str = 'GET /devices/' + id + "/off." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     try:
         identity = int(id)
@@ -311,13 +314,13 @@ def turnoff_device(id, format):
     else:
         return err(format, 400, request_str, 220)
 
-@route('/devices/:id/dim/:level\.:format', method='GET')
+@route('/devices/:id/dim/:level.:format', method='GET')
 def dim_device(id, level, format):
     request_str = 'GET /devices/' + id + "/dim/" + level + "." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     try:
         identity = int(id)
@@ -335,13 +338,13 @@ def dim_device(id, level, format):
     else:
         return err(format, 400, request_str, 220)
     
-@route('/devices/:id/learn\.:format', method='GET')
+@route('/devices/:id/learn.:format', method='GET')
 def learn_device(id, format):
     request_str = 'GET /devices/' + id + "/learn." + format
     ok, response_code, error_code = pre_check(format, ["xml"])
     if not ok:
         return err(format, response_code, request_str, error_code)
-    set_content_type(format)
+    set_headers(format)
 
     try:
         identity = int(id)
@@ -356,7 +359,7 @@ def learn_device(id, format):
             return err(format, 502, request_str, 300, libtelldus.tdGetErrorString(retval))
     else:
         return err(format, 400, request_str, 220)
-    
+        
 def usage():
     print "Usage: remotestick-server [OPTION]..."
     print "Expose tellstick services through RESTful services."
@@ -383,10 +386,9 @@ def main():
     host = None
     port = None
     library = None
-    username = None
-    password = None
+    global username
+    global password
     global reqauth
-    global encodedauth
     
     for o, a in opts:
         if o in ("-h", "--host"):
@@ -416,8 +418,6 @@ def main():
     if username == None or password == None:
         print "Warning: No authentication required. Please consider setting --username and --password."
         reqauth = False
-    else:
-        encodedauth = "Basic " + b64encode(username + ":" + password)
         
     if (host == None and port == None):
         run(port="8422")
