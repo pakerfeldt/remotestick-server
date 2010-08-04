@@ -174,7 +174,6 @@ def new_device(format):
     set_headers(format)
     
     name = request.POST.get('name', '').strip()
-    print "Name: " + name
     if not name:
         return err(format, 400, request_str, 201)
     
