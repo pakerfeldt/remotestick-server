@@ -151,6 +151,7 @@ def set_headers(format):
     if format == "xml":
         response.set_content_type('text/xml; charset=utf8')
     response.headers.append("X-API-VERSION", str(API_VERSION))
+    response.headers.append("X-VERSION", VERSION)
 
 @route('/devices.:format', method='GET')
 def devices(format):
