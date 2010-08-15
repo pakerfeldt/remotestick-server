@@ -1,0 +1,9 @@
+---
+layout: post
+title: Hello world!
+category: news
+---
+
+h2. {{ page.title }}
+
+RemoteStick gets a web site. 

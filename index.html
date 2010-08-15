@@ -1,0 +1,27 @@
+---
+layout: default
+title: RemoteStick
+---
+
+<div id="home">
+	<p><h3>New to RemoteStick?</h3>
+	RemoteStick lets you remotely control lights and other electronics from your Android device. If you are new to RemoteStick, read more on the <a href="/about.html">About</a> page.
+	</p>
+	<p><h3>Success stories</h3>
+	RemoteStick is looking for your success story! Do you want to share your solution and how you have come to use RemoteStick? Please send us an email at <em>story {at} remotestick.org</em> and it might get published here on the web site. Please write to us in either English or Swedish.
+	</p>
+  <h1>News</h1>
+  <ul class="posts">
+  	{% for post in site.categories.news %}
+      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>  	
+  	{% endfor %}
+  </ul>
+  <h1>Guides</h1>
+  <ul class="posts">
+    {% for post in site.categories.guide %}
+      <li>&raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+    
+</div>
+  

@@ -1,0 +1,86 @@
+---
+layout: guide
+title: Step by step installation for Windows XP / Windows 7
+category: guide
+---
+
+h2. {{ page.title }}
+
+This guide goes through the steps of installing and running RemoteStick Server and the RemoteStick Client for Android. This guide will *not* cover how to setup your router to allow for a connection to RemoteStick server outside your local network. The router configuration heavily depends on the type of router you are running. Please consult your manual on how to setup "port forwarding":http://www.google.se/search?q=port+forwarding.
+
+h4. Step 1 - Install Python 2.7
+
+"Go to this link":http://www.python.org/download/ and download Python 2.7.  
+<a href="/images/91860642.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/91860642.png" alt="Download Python 2.7"title="Click to enlarge" width="200" /></a>
+
+Go ahead and install Python under C:\Program Files (x86)\Python27
+
+h4. Step 2 - Install TelldusCenter
+
+Go to "telldus.se":http://www.telldus.se and click on the Windows XP / Vista link.
+<a href="/images/94641360.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/94641360.png" alt="Download TelldusCenter"title="Click to enlarge" width="200" /></a>
+Double click the downloaded executable to start the installation. Choose to install drivers for your Tellstick USB stick as well.
+
+Start TelldusCenter, you should be able to find it under _Start / All Programs / Telldus / TelldusCenter_. You can define all your physical devices with this application on beforehand if your want to. Adding devices in TelldusCenter is not covered by this guide though, but "Telldus provides manuals for this":http://www.telldus.se/products/guides. 
+
+h4. Step 3 - Prepare RemoteStick Server
+
+Go to "the download page":http://github.com/pakerfeldt/remotestick/downloads and download the latest zip version. Extract its content to _C:\Program Files (x86)_.
+<a href="/images/73740914.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/73740914.png" alt="Extract remotestick-server"title="Click to enlarge" width="300" /></a>
+
+* Press _WIN+Pause break_ (or right-click _Computer_ and choose _Properties_)
+* Go to _Advanced system settings_
+<a href="/images/86872716.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/86872716.png" alt="Advanced system settings"title="Click to enlarge" width="200" /></a>
+* Click on _Environment Variables_
+* Find _Path_ under _System variables_
+* Double click _Path_ and paste the following at the *end of the line*: _;C:\Program Files (x86)\Telldus_ (don't forget the semi-colon!)
+It should look something like this:
+<a href="/images/19932875.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/19932875.png" alt="Setting the Path variable"title="Click to enlarge" width="200" /></a>
+
+h4. Step 4 - Start RemoteStick Server
+
+* Press _WIN+r_ (or open _Start / All Programs / Accessories / Command Prompt')
+* Type _cd \_ (and press Enter)
+* Type _ipconfig_ (and press Enter)
+The output will look something like this:
+<a href="/images/57069905.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/57069905.png" alt="Running ipconfig" title="Click to enlarge" width="200" /></a>
+This will show you your local IP address (which is the IP address you will have to port forward in your router to access RemoteStick server from your mobile phone). Note the IP address.
+
+* Type _cd "Program Files (x86)"_ (and press Enter)
+* Type _cd remotestick-server_ (and press Enter)
+* Type _remotestick-server.py -h YOUR_LOCAL_IP_ADDRESS -u test -s 123abc_ (and press Enter) (obviously replace YOUR_LOCAL_IP_ADDRESS with your actual local IP address as previously found.
+
+Now, if all goes well, remotestick-server is running.
+
+h4. Step 5 - Installing the RemoteStick Client for Android
+
+* Go to Market and search for _remotestick_ or if you prefer scan the following bar code:
+<img src="/images/barcode.png" alt="RemoteStick bar code" title="Click to enlarge" />
+and install the app.
+
+h4. Step 6 - Accessing RemoteStick Server externally from your Android device
+
+This step requires that you've already setup port forwarding correctly. If your rather access RemoteStick Server internally, see Step 7.
+
+* Go to "www.whatsmyip.org":http://www.whatsmyip.org/ and write down your *external* IP address.
+* Open RemoteStick (in your Android device)
+* Go into _Menu_ and _Preferences_
+* Under _Host_ type in your *extenal* IP address as found above
+* Under _Username_ type in _test_
+* Under _Password_ type in _123abc_
+* Hit the _Back_ button and you should see your devices being listed
+
+h4. Step 7 - Accessing RemoteStick Server internally from your Android device
+
+This step requires that your Android device is on the same local network as the computer running RemoteStick Server. Typically this means you use WiFi on your Android device at home.
+* Open RemoteStick (in your Android device)
+* Go into _Menu_ and _Preferences_
+* Under _Host_ type in your *internal* IP address as found in Step 4
+* Under _Username_ type in _test_
+* Under _Password_ type in _123abc_
+* Hit the _Back_ button and you should see your devices being listed
+
+*Note:* Accessing RemoteStick Server internally within your local network means you won't be able to use RemoteStick when you are on-the-go.
+
+
+Many thanks to "*tattis* on swedroid.se":http://www.swedroid.se/forum/member.php?u=8745 who wrote the original guide in swedish.

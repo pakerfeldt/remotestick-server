@@ -1,0 +1,35 @@
+---
+layout: default
+title: About
+---
+
+<div>
+  <h1>About</h1>
+<p>
+<h3>Possibilites</h3>
+<ul>
+<li class="circle">Have you ever wanted fresh coffe when you arrive home after work?</li>
+<li class="circle">Have you ever been unsure whether or not you turned off the lights before leaving for vacation?</li>
+<li class="circle">Would you like the possibility to turn on the engine pre-heater without having to head to the garage?</li>
+<li class="circle">Or do you simple love the possibility to control all your lights directly from your phone, wherever you are?</li>
+<li class="circle">Tired of arriving at a freezing cold (or extremely hot) vacation house?</li>
+</ul>
+RemoteStick is all about this. Remotely controlling your home.
+<p>
+<h3>Tellstick</h3>
+RemoteStick revolves around <em>Tellstick</em>. Tellstick, a USB stick manufactured by the Swedish company <a href="http://www.telldus.se">Telldus</a>, <em>"turns any computer into a wireless home automation center by being the link between your computer and electronics & lights"</em> (quoted from Telldus web site). Telldus has a <a href="http://www.telldus.se/retailer/show?id=17">list of retailers</a> that you might want to check out. Tellstick is able to control all kinds of devices from different manufacturers such as power sockets, light bulbs, switch converters and many more.
+<p>
+<h3>How does it work?</h3>
+You simply plug the Tellstick USB stick to a computer at home. It need to run either Windows, Mac OS X or Linux with Python installed (preferably version 2.7). The Tellstick driver is installed by downloading the appropriate package from <a href="http://www.telldus.se">Telldus homepage</a>. Now RemoteStick Server is installed which, when started, will communicate with the Tellstick through the driver and expose it on the network using RESTful services. Now you will be able to access your server using the Android client on your phone.
+<p>
+<p>
+<h3>Guides</h3>
+Get going faster by reading any of our guides:
+<ul class="posts">
+    {% for post in site.categories.guide %}
+      <li>&raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+</p>
+</p>
+</div>
