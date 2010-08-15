@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 2010-08-15 - pakerfeldt (0.3.5)
+ * Even better handling of authentication
+ * Ignore invalid 'last sent value' result from driver
+
 ## 2010-08-02 - pakerfeldt (0.3.4)
  * Correct handling of authentication
  
