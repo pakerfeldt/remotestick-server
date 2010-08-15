@@ -1,0 +1,11 @@
+---
+layout: post
+title: Server v0.3.5 and Client v1.3.7
+category: news
+---
+
+h2. {{ page.title }}
+
+New version is out for both the server and the client. It has been a while since the server was last updated. v0.3.7 includes (hopefully) a fix where strange characters could appear in <em>last sent value</em> which caused the server to return an invalid XML and yield a <em>SAXException: At Line X, column Y: not well-formed (invalid token)</em> in the android app. I say hopefully because I'm not able to reproduce the issue myself. The client also got a minor update. Links in About page updated as well as a fix for <em>server version notification</em> as a consequence of the new domain address. You will need this new version in order for <em>server version notification</em> to work. 
+
+Happy remoting!
