@@ -216,8 +216,10 @@ padding:1px 2px 2px 3px;
 }
 
 h4 {
-color: #23af4c;
+color: #fba919;
 }
+h4.underline { border-bottom:1px solid #fba919; }
+
 
 #wrap {
 color:#ccc;
@@ -250,6 +252,7 @@ line-height:1.2em;
 margin:-15px 0 60px 0px;
 }
 div.menu div { display:inline;}
+
 
 /*** Main content ***/
 

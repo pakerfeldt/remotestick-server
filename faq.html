@@ -1,0 +1,77 @@
+---
+layout: default
+title: FAQ
+---
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.1/swfobject.js"></script> 
+
+<script type="text/javascript"> 
+hs.graphicsDir = '/javascript/highslide/graphics/';
+hs.outlineType = 'rounded-white';
+hs.wrapperClassName = 'draggable-header';
+</script>
+<script type="text/javascript"> 
+// Apply the Highslide settings
+hs.graphicsDir = '/javascript/highslide/graphics/';
+hs.outlineType = 'rounded-white';
+hs.outlineWhileAnimating = true;
+hs.allowSizeReduction = false;
+// always use this with flash, else the movie will be stopped on close:
+hs.preserveContent = false;
+hs.wrapperClassName = 'draggable-header no-footer';
+ 
+ 
+// create a shorthand function so we don't need to put all this in the opener's onclick
+function openYouTube(opener) {
+	var returnValue;
+	
+	// Safari Mobile doesn't have Flash, so we just let the device use the built-in 
+	// YouTube viewer.		
+	if (/(iPhone|iPod|iPad)/.test(navigator.userAgent)) {
+		opener.href = opener.href.replace('/v/', '/watch?v=');
+		returnValue = true;		
+	}
+ 
+	else returnValue = hs.htmlExpand(opener, { 
+		objectType: 'swf', 
+		objectWidth: 480, 
+		objectHeight: 385, 
+		width: 480, 
+		swfOptions: { 
+			params: { 
+				allowfullscreen: 'true' 
+			}
+		}, 
+		maincontentText: 'You need to upgrade your Flash player' 
+	});
+	
+	return returnValue;
+}  
+</script> 
+
+<div>
+  <h1>FAQ</h1>
+
+<h4 class="underline">I get an error like <em>"(4) SAXException: At Line 8, column 13: not well-formed (invalid token)"</em> on my Android device.</h4>
+<p>
+This means that the response sent from RemoteStick Server to the Android client has invalid tokens in it. Which in turn means that unknown characters were return from the tellstick driver to the RemoteStick Server.
+	This could happen if you try to create a device with non-ascii characters like &auml; for instance. If you know this is the case, open up TelldusCenter and fix the issue by renaming or removing the device in question.
+	If this isn't the case it could be that the tellstick driver is for some reason returning strange characters for a certain field. The only solution for this, which isn't very nice, is to comment two lines in remotestick-server.py. Open the file in a text editor and find the two following lines around line 120-121:
+<pre>if lastValue != None and lastValue != "":
+	element += "\t\t<lastvalue>" + str(lastValue) + "</lastvalue>\n"</pre>Comment them by typing a <em>#</em> as the first character on the line.
+	<br/>	
+	If you are familiar with XML you might want to investigate the issue furhter by browsing http://[your ip adress]:8422/devices.xml in a regular web browser. Right click and "Show source" (or equivalent) to show the response. 
+</p>
+
+<h4 class="underline">When controlling a device from Android I get the message saying something like <em>"MyDevice turn on"</em> but the device never react.</h4>
+<p>
+This means that RemoteStick has successfully issued the command to the Tellstick. You have probably not learned the device properly. You could either use TelldusCenter or RemoteStick for this. See guides at Telldus web site for more information.
+</p>
+<a href="http://www.youtube.com/watch?v=IVhkp734HoU=nb_NO&fs=1&" onclick="return openYouTube(this)"
+		class="highslide"> 
+	How to learn self-learning devices.
+</a> 
+http://www.youtube.com/watch?v=IVhkp734HoU&feature=player_embedded#!
+
+
+</div>
