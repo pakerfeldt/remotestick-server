@@ -26,7 +26,7 @@ from sys import argv, exit, platform
 from base64 import b64encode
 import time
 
-VERSION = "0.3.4"
+VERSION = "0.3.5"
 API_VERSION = 1
 
 #Device methods
@@ -101,10 +101,13 @@ def err(format, responsecode, request, code, code_msg=None):
 def err_xml(request, msg):
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n\t<request>" + request + "</request>\n\t<error>" + msg + "</error>\n</hash>"
 
-def authenticate(requestUser, requestPassword):
+def authenticate(auth):
     global username, password
-    if reqauth:
-        return (username == requestUser and password == requestPassword)
+    if reqauth and auth == None:
+        return False
+    elif reqauth:
+        sentUsername, sentPassword = auth
+        return (username == sentUsername and password == sentPassword)
     else:
         return True
 
@@ -121,7 +124,11 @@ def read_device(identity):
     else:
         element += "\t\t<lastcmd>OFF</lastcmd>\n"
     if lastValue != None and lastValue != "":
-        element += "\t\t<lastvalue>" + str(lastValue) + "</lastvalue>\n"
+        try:
+            lastValueConverted = int(lastValue)
+            element += "\t\t<lastvalue>" + str(lastValueConverted) + "</lastvalue>\n"
+        except:
+            pass
     
     if methods & TELLSTICK_BELL:
         element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_BELL) + "\">" + "TELLSTICK_BELL</supportedMethod>\n"
@@ -141,10 +148,8 @@ def read_device(identity):
 def pre_check(format, accepted_formats):
     if format not in accepted_formats:
         return False, 400, 101
-    username, password = request.auth
-    if not authenticate(username, password):
+    if not authenticate(request.auth):
         return False, 401, 100
-    
     return True, None, None
 
 def set_headers(format):
@@ -177,7 +182,7 @@ def new_device(format):
     name = request.POST.get('name', '').strip()
     if not name:
         return err(format, 400, request_str, 201)
-    
+
     model = request.POST.get('model', '')
     if not model:
         return err(format, 400, request_str, 202)
@@ -195,15 +200,12 @@ def new_device(format):
                 return err(format, 400, request_str, 210)
             else:
                 parameters.append(keyval)
-
     identity = libtelldus.tdAddDevice()
     libtelldus.tdSetName(identity, name.strip())
     libtelldus.tdSetProtocol(identity, protocol.strip())
     libtelldus.tdSetModel(identity, model.strip())
-    print parameters
     for param in parameters:
         libtelldus.tdSetDeviceParameter(identity, param[0], param[1])
-
     retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     retval += read_device(identity)
     return retval
@@ -253,13 +255,13 @@ def change_device(id, format):
     name = request.POST.get('name', '').strip()
     protocol = request.POST.get('protocol', '').strip()
     model = request.POST.get('model', '').strip()
-    if not name:
+    if name:
         libtelldus.tdSetName(int(id), name)
     
-    if not model:
+    if model:
         libtelldus.tdSetModel(int(id), model)
     
-    if not protocol:
+    if protocol:
         libtelldus.tdSetProtocol(int(id), protocol)
           
     retval = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
