@@ -1,0 +1,14 @@
+---
+layout: post
+title: Day & Night Locale Plug-in
+category: news
+---
+
+h2. {{ page.title }}
+
+Just recently released a Locale condition plug-in for daytime and nighttime based on sunrise and sunset calculations. Will add some nice extra features to the plug-in soon. Perhaps it will come in handy for some of you who uses the RemoteStick Locale plug-in. Or any other Locale user for that matter!
+
+Search for <em>Day & Night Locale plug-in</em> on Market and you should find it.
+More information about Locale: "http://www.twofortyfouram.com/":http://www.twofortyfouram.com/
+
+Happy remoting!
