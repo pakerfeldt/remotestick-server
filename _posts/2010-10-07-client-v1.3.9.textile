@@ -1,0 +1,14 @@
+---
+layout: post
+title: v1.3.9 out!
+category: news
+---
+
+h2. {{ page.title }}
+
+v1.3.9 should be available on Market now. Now supports adding devices with non-ascii characters (finally!). A few FC's have been fixed as well, thanks for the reports!
+Oh, and I've also removed Google Analytics from the app since I didn't really make any use of it.
+
+A donate version of the app is out as well. It goes for 10 SEK (~ $1.5 or €1) and there is no difference between the two versions. But please buy the donate version if you appreciate the app.
+
+Happy remoting!
