@@ -127,8 +127,8 @@ def read_device(identity):
         try:
             lastValueConverted = int(lastValue)
             element += "\t\t<lastvalue>" + str(lastValueConverted) + "</lastvalue>\n"
-        except:
-            pass
+        except Exception, e:
+            print e
     
     if methods & TELLSTICK_BELL:
         element += "\t\t<supportedMethod id=\"" + str(TELLSTICK_BELL) + "\">" + "TELLSTICK_BELL</supportedMethod>\n"
