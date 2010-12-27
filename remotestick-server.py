@@ -364,7 +364,7 @@ def learn_device(id, format):
         
 def usage():
     print "Usage: remotestick-server [OPTION]..."
-    print "Expose tellstick services through RESTful services."
+    print "Expose tellstick interfaces through RESTful services."
     print ""
     print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8422 where no authentication is required."
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
