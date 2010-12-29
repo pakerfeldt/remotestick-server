@@ -18,7 +18,7 @@
 # 
 # 
 
-from bottle import route, run, response, request
+from bottle import route, run, response, request, static_file
 from ctypes import util
 from ctypes import *
 from getopt import getopt, GetoptError
@@ -42,6 +42,8 @@ reqauth = True
 username = None
 password = None
 libtelldus = None
+static = "./static"
+disable_static=False
 
 def loadlibrary(libraryname=None):
     if libraryname == None:
@@ -362,25 +364,39 @@ def learn_device(id, format):
     else:
         return err(format, 400, request_str, 220)
         
+@route('/static', method='GET')
+@route('/static/', method='GET')
+def static_default():
+    if not disable_static:
+        return static_file('index.html', root=static)
+
+@route('/static/:file#.*[^/]#', method='GET')
+def static(file):
+    if not disable_static:
+        return static_file(file, root=static) 
+
 def usage():
-    print "Usage: remotestick-server [OPTION]..."
+    print "Usage: remotestick-server [OPTION] ..."
     print "Expose tellstick interfaces through RESTful services."
     print ""
     print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8422 where no authentication is required."
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
     print ""
-    print "-h, --host\t\thost/IP which the server will bind to, default to loopback"
-    print "-p, --port\t\tport which the server will listen on, default to 8422"
-    print "-u, --username\t\tusername used for client authentication"
-    print "-s, --password\t\tpassword used for client authentication"
-    print "-l, --library\t\tname of telldus-core library"
+    print "-h, --host\t\tHost/IP which the server will bind to, default to loopback"
+    print "-p, --port\t\tPort which the server will listen on, default to 8422"
+    print "-u, --username\t\tUsername used for client authentication"
+    print "-s, --password\t\tPassword used for client authentication"
+    print "-l, --library\t\tName of telldus-core library"
+    print "-f, --static\t\tPath to static files folder"
+    print "-d, --disable-static\t\tDisable static files"
+    print "-V, --version\t\tPrint the version number and exit"
 
 def version():
     print "remotestick-server v" + VERSION
 
 def main():
     try:
-        opts, args = getopt(argv[1:], "?h:p:u:s:l:V", ["?", "host=", "port=", "username=", "password=", "library=", "version"])
+        opts, args = getopt(argv[1:], "?h:p:u:s:l:f:dV", ["?", "host=", "port=", "username=", "password=", "library=", "static=", "disable-static", "version"])
     except GetoptError, err:
         print str(err)
         usage()
@@ -391,6 +407,8 @@ def main():
     global username
     global password
     global reqauth
+    global static
+    global disable_static
     
     for o, a in opts:
         if o in ("-h", "--host"):
@@ -403,6 +421,10 @@ def main():
             password = a
         elif o in ("-l", "--library"):
             library = a
+        elif o in ("-f", "--static"):
+            static = a
+        elif o in ("-d", "--disable-static"):
+            disable_static=True
         elif o in ("-V", "--version"):
             version()
             exit()
