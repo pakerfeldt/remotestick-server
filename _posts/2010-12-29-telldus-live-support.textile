@@ -16,7 +16,7 @@ Setting up Telldus Live! is fairly easy. You will need Telldus Center but note t
 
 Note also that we do not give any support for Telldus Live! related issues. You should contact Telldus if any such occurrs. "Telldus Forum":http://www.telldus.se/forum is a place to start.
 
-Starting from v1.4.1, you should now have the option to choose service on the Preference page. You can only communicate using one service at the time. Obviously, *Group*s created will only be associated with the service where it was created.
+Starting from v1.4.1, you should now have the option to choose service on the Preference page. You can only communicate using one service at the time. Obviously, _Groups_ created will only be associated with the service where it was created.
 
 
 Happy remoting!
