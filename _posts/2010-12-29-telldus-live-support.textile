@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Telldus Live! support in v1.4.1
+title: Telldus Live! support in v1.4.2
 category: news
 ---
 
 h2. {{ page.title }}
 
-We are happy to announce that RemoteStick version 1.4.1 for Android is out and it features support for Telldus Live!. Let us take a minute to explain what Telldus Live! is about and how it relates to RemoteStick Server.
+We are happy to announce that RemoteStick version 1.4.2 for Android is out and it features support for Telldus Live!. Let us take a minute to explain what Telldus Live! is about and how it relates to RemoteStick Server.
 
 Telldus Live! is a service brought to you by Telldus themselves to enable trouble-free access to the Tellstick over internet. As you might have guessed already, this means that Telldus Live! replaces RemoteStick Server. Well, that's just partly true. RemoteStick Server will continue to live for as long as there is a need for it. RemoteStick Server and Telldus Live! differs from each other.
 
@@ -16,7 +16,7 @@ Setting up Telldus Live! is fairly easy. You will need Telldus Center but note t
 
 Note also that we do not give any support for Telldus Live! related issues. You should contact Telldus if any such occurrs. "Telldus Forum":http://www.telldus.se/forum is a place to start.
 
-Starting from v1.4.1, you should now have the option to choose service on the Preference page. You can only communicate using one service at the time. Obviously, _Groups_ created will only be associated with the service where it was created.
+Starting from v1.4.2, you should now have the option to choose service on the Preference page. You can only communicate using one service at the time. Obviously, _Groups_ created will only be associated with the service where it was created.
 
 
 Happy remoting!
