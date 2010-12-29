@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-12-29 - pakerfeldt (0.4.0)
+ * Added support for static files through path /s/
+
 ## 2010-08-15 - pakerfeldt (0.3.5)
  * Even better handling of authentication
  * Ignore invalid 'last sent value' result from driver
