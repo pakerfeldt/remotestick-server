@@ -26,7 +26,7 @@ from sys import argv, exit, platform
 from base64 import b64encode
 import time
 
-VERSION = "0.3.5"
+VERSION = "0.4.0"
 API_VERSION = 1
 
 #Device methods
@@ -381,6 +381,7 @@ def usage():
     print ""
     print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8422 where no authentication is required."
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
+    print ""
     print "Given that static files are not disabled, they are always accessed through the URI path /s/ not matter where the static files folder is defined."
     print ""
     print "-h, --host\t\tHost/IP which the server will bind to, default to loopback"
@@ -389,7 +390,7 @@ def usage():
     print "-s, --password\t\tPassword used for client authentication"
     print "-l, --library\t\tName of telldus-core library"
     print "-f, --static\t\tPath to static files folder, defaults to ./static"
-    print "-d, --disable-static\t\tDisable static files"
+    print "-d, --disable-static\tDisable static files"
     print "-V, --version\t\tPrint the version number and exit"
 
 def version():
