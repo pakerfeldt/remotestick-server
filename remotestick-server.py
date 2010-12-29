@@ -364,13 +364,13 @@ def learn_device(id, format):
     else:
         return err(format, 400, request_str, 220)
         
-@route('/static', method='GET')
-@route('/static/', method='GET')
+@route('/s', method='GET')
+@route('/s/', method='GET')
 def static_default():
     if not disable_static:
         return static_file('index.html', root=static)
 
-@route('/static/:file#.*[^/]#', method='GET')
+@route('/s/:file#.*[^/]#', method='GET')
 def static(file):
     if not disable_static:
         return static_file(file, root=static) 
@@ -381,13 +381,14 @@ def usage():
     print ""
     print "Without any arguments remotestick-server will start a http server on 127.0.0.1:8422 where no authentication is required."
     print "Setting the name of the telldus-core library should not be needed. remotestick-server is able to figure out the correct library name automatically. If, for some reason, this is unsuccessful, use --library."
+    print "Given that static files are not disabled, they are always accessed through the URI path /s/ not matter where the static files folder is defined."
     print ""
     print "-h, --host\t\tHost/IP which the server will bind to, default to loopback"
     print "-p, --port\t\tPort which the server will listen on, default to 8422"
     print "-u, --username\t\tUsername used for client authentication"
     print "-s, --password\t\tPassword used for client authentication"
     print "-l, --library\t\tName of telldus-core library"
-    print "-f, --static\t\tPath to static files folder"
+    print "-f, --static\t\tPath to static files folder, defaults to ./static"
     print "-d, --disable-static\t\tDisable static files"
     print "-V, --version\t\tPrint the version number and exit"
 
