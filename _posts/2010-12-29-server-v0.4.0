@@ -1,0 +1,13 @@
+---
+layout: post
+title: Server v0.4.0
+category: news
+---
+
+h2. {{ page.title }}
+
+Server is now at v0.4.0 with one major update, namely support for static files. By default, remotestick-server will expose what's inside the ./static folder under the URL http://[hostname]:[port]/s/. If you want to expose files under a different folder, use the -f switch. Do completly disable static files use the -d switch.
+
+I know for a fact that there is a webb access gui add-on heading this way which will enable you to control your devices directly from a browser.
+
+Happy remoting!
