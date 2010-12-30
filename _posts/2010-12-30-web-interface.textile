@@ -1,0 +1,14 @@
+---
+layout: post
+title: Web interface for server
+category: news
+---
+
+h2. {{ page.title }}
+
+There is a web interface add-on available for RemoteStick Server. You will need at least v0.4.0. The add-on "is found here.":https://github.com/morkeleb/remotestick-webgui Click on Downloads link to find the lastest available version of the add-on. Replace the static folder in your remotestick-server directory with the static folder in remotestick-webgui. You should now be able to access the web interface through http://[hostname]:[port]/s/
+In the future we might bundle this webgui together with remotestick-server releases but for now you'll have to follow the link above and install it yourself. 
+
+Thanks to "morkeleb":https://github.com/morkeleb for this add-on.
+
+Happy remoting!
