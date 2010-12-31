@@ -1,5 +1,8 @@
 # ChangeLog
 
+## 2010-12-31 - pakerfeldt (0.4.1)
+ * Fixed bug where -f flag was required for static files
+
 ## 2010-12-29 - pakerfeldt (0.4.0)
  * Added support for static files through path /s/
 
