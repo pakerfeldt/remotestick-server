@@ -8,6 +8,6 @@ h2. {{ page.title }}
 
 There is now a zip file available on the server download page which contains v0.4.1 together with the add-on webgui v0.2. Just download and start remotestick-server as usual and you'll find the web interface under _/s/_. Like _http://example.org:8422/s/_
 
-The web interface add-on is brought to you by "morkeleb":https://github.com/morkeleb
+The web interface add-on is brought to you by "morkeleb":https://github.com/morkeleb and has its "own web page":http://www.morkeleb.com/software-portfolio/remotestick-webgui/
 
 Happy remoting!
