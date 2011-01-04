@@ -40,7 +40,7 @@ It should look something like this:
 h4. Step 4 - Start RemoteStick Server
 
 * Press _WIN+r_ (or open _Start / All Programs / Accessories / Command Prompt')
-* Type _cd \_ (and press Enter)
+* Type _cmd \_ (and press Enter)
 * Type _ipconfig_ (and press Enter)
 The output will look something like this:
 <a href="/images/57069905.png" class="highslide" onclick="return hs.expand(this)"><img src="/images/57069905.png" alt="Running ipconfig" title="Click to enlarge" width="200" /></a>
