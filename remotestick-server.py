@@ -26,7 +26,7 @@ from sys import argv, exit, platform
 from base64 import b64encode
 import time
 
-VERSION = "0.4.0"
+VERSION = "0.4.1"
 API_VERSION = 1
 
 #Device methods
