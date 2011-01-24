@@ -450,11 +450,11 @@ def main():
         reqauth = False
         
     if (host == None and port == None):
-        run(port="8422")
+        run(host="0.0.0.0", port="8422")
     elif host != None and port == None:
         run(host=host, port="8422")
     elif host == None and port != None:
-        run(port=port)
+        run(host="0.0.0.0", port=port)
     else:
         run(host=host, port=port)
              
