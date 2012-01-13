@@ -1,0 +1,23 @@
+---
+layout: post
+title: I present to you - RemoteStick 2.0
+category: news
+---
+
+h2. {{ page.title }}
+
+Today marks a milestone in the RemoteStick history with the release of version 2.0. A complete re-make. 
+
+A lot has happened with Tellstick last year. Both Duo and Net were released which opened up for a lot of new opportunities with its receiving capabilities. Telldus Live! already has support for a few different wireless consumer sensors. 
+
+And so, late last year I decided to re-write RemoteStick completely. The code base was pretty much a mess, being the first Android app I've developed. Supporting two very different API's (RemoteStick Server and Telldus Live!) and still maintaining a coherent experience was challenging as well. Therefore, I decided for RemoteStick 2.0 to only support one API and went for the Telldus Live! API. Simply because Telldus Live! is an official API with many users already. For the vast majority it's a lot easier to use than RemoteStick Server. The new app more or less completely implements the Telldus Live! API meaning it supports managing devices, sensors and schedules. In addition, it also supports groups and enables the use of home screen widgets, both for devices and sensors. To help me keep motivated adding new features (I have a lot of ideas) I've decided to charge for RemoteStick 2.0, SEK 25 or &#8364;2.9.
+
+On Android Market, the two versions 1.x and 2.0 appear as two different apps. The old one is renamed RemoteStick Lite and the new version RemoteStick. The reason to have two different apps are twofold. The new version is not backward compatible as it doesn't support RemoteStick Server and the old app will remain free of charge.
+
+This also means that RemoteStick Server is deprecated. At least the current design. I know some of you will get disappointed as you want full control of the entire solution (i.e. running the server locally), which is totally understandable. Sadly, I currently don't have the time to support a backend service as well. Whenever I get the time, or if anyone out there dare to take on the challenge, I believe the way forward is to imitate the Telldus Live! API. That would be benefitial for several reasons, one being that third party Telldus Live! clients (such as RemoteStick 2.0) would be able to support the new backend with little effort. 
+
+I hope for your understanding on the choices I've made and that you will enjoy the brand new RemoteStick 2.0.
+
+<a href="https://market.android.com/details?id=org.remotestick">RemoteStick on Android Market</a>
+
+Happy remoting!
