@@ -1,0 +1,13 @@
+---
+layout: post
+title: Follow and influence development
+category: news
+---
+
+h2. {{ page.title }}
+
+I am evaluating the use of Trello to provide information about future development of RemoteStick. The <a href="https://trello.com/b/N2YODiHB">Trello project</a> is open for anyone to read and with a Trello account you can vote and comment on indivudal features as well. If you have a Google account already you can sign in instantly without having to deal with sign up details. The priority of tasks will be heavily influenced by votes from you users although there is no guarantee that the task with most votes will be done first. Anyway, I encourage users to vote on feature requests as it will help me understand what people desire the most. If there is anything you would like to see that is not already listed, send an e-mail to hello@remotestick.org.
+
+<a href="https://trello.com/b/N2YODiHB">RemoteStick at Trello</a>
+
+Happy remoting!
