@@ -1,0 +1,16 @@
+---
+layout: post
+title: NFC support
+category: news
+---
+
+h2. {{ page.title }}
+
+A new RemoteStick version is soon to be released which includes NFC / RFID support. You will be able to control devices by merely holding your NFC supported device in front of a NFC sticker.
+
+Initially, RemoteStick will officially only support tags of type Mifare Classic 1K. These can be bought from <a href="http://tagsfordroid.com">tagsfordroid.com</a> (US). Expect shipping to EU to take at least a couple of weeks. 
+I have a limit stock of tags available for sale that I ship within EU. These are from tagsfordroid.com initally, they have the Android logo printed on them and they are pre-formatted to work with RemoteStick*. They are 30 SEK each excluding shipping cost (which is like 10 SEK within Sweden, without insurrance). Contact me on hello@remotestick.org if you are interested.
+
+* Due to a bug in versions prior to 4.0.3 of Android, RemoteStick won't be able to write to unformatted tags. However, they can be formatted (with any NDEF data) using NFC TagWriter, from Google Play Store, prior use with RemoteStick.
+
+Happy remoting!
