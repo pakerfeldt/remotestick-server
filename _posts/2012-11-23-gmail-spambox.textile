@@ -1,0 +1,13 @@
+---
+layout: post
+title: Unanswered emails
+category: news
+---
+
+h2. {{ page.title }}
+
+I just noticed a lot of RemoteStick mail in my Gmail spambox for some reason. Although I was able to answer all of them, the spam box only streched back to end of October. If you have tried to contact me and didn't get an answer, please email me again!
+
+Sorry for the inconvenience.
+
+Happy remoting!
