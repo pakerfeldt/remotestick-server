@@ -1,63 +1,61 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"  />
-<meta name="description" content="RemoteStick" />
-<meta name="keywords" content="remotestick,tellstick,home automation,android,restful" />
-<meta name="author" content="Patrik Åkerfeldt" />
-<link rel="stylesheet" type="text/css" href="/css/default.css" />
-<!-- <script type="text/javascript" src="/javascript/highslide/highslide.js"></script> -->
-<script type="text/javascript" src="/javascript/highslide/highslide-with-html.js"></script> 
-<link rel="stylesheet" type="text/css" href="/javascript/highslide/highslide.css" /> 
-<script type="text/javascript"> 
-	hs.graphicsDir = '/javascript/highslide/graphics/';
-	hs.showCredits = false;
-	hs.wrapperClassName = 'draggable-header';
-	hs.wrapperClassName =" 'outer-glow";
-	hs.outlineType = 'outer-glow';
-</script> 
-<title>Home of RemoteStick</title>
-</head>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Remotestick by pakerfeldt</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<body> 
-<div id="wrap">
-	<div id="header">
-		<p id="toplinks">
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="googleplay"><a href="http://play.google.com/store/apps/details?id=org.remotestick">Download on Google Play</a></li>
+          <!--
+          <li class="downloads"><a href="#">ZIP</a></li>
+          <li class="downloads"><a href="#">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        -->
+        </nav>
+      </div><!-- end header -->
 
-		</p>
+    <div class="wrapper">
 
-		<h1><a href="/"><div id="logo"></div><span class="maintitle">RemoteStick</span></a></h1>
-		
-		<!--
-		<div id="windows"></div>
-		<div id="macosx"></div>
-		<div id="android"></div>
-		<div id="linux"></div>
-		
-		<div class="menu">
-		<a class="lightblue" href="http://github.com/pakerfeldt/remotestick/downloads"> 
-			Server: <span class="em135">v0.4.1</class>
-		</a> | 
-		<a class="lightblue" href="/androidclient.html"> 
-			Client: <span class="em135">v1.4.2</span>
-		</a> | 
-		<a class="lightblue" href="/about.html">About</a>
-		</div>
-		<span style="font-size: 4.5em">&nbsp;</span>
-		-->
-</div>
+      <section>
+        <div id="title">
+          <h1>Remotestick</h1>
+          <p>Android client for Telldus Live!</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/pakerfeldt">pakerfeldt</a></span>
+          <span class="credits right">Hosted on GitHub Pages</span>
+        </div>
+        <div>
+        {% if page.backbutton == true %}
+          <div class="center"><a href="/index.html">Back</a></div>
+        {% endif %}
+        </div>
+        {{ content }}
+      </section>
 
-<div id="content">  
-  {{ content }}
-</div>
-
-<div id="footer">
-<p>hello @ remotestick.org | &copy; 2012 Patrik &Aring;kerfeldt
-
-</div>
-
-</div>
-<script type="text/javascript">
+<section>
+         <div id="title">
+           <span class="credits left">hello @ remotestick.org</span>
+           <span class="credits right">Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+          </div>
+</section>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script type="text/javascript">
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-9715280-6']);
@@ -70,5 +68,5 @@
   })();
 
 </script>
-</body>
+  </body>
 </html>
