@@ -1,0 +1,15 @@
+---
+layout: post
+title: New updates coming out
+category: news
+---
+
+h2. {{ page.title }}
+
+2.4.4 was recently released. The main feature in this release was the support for Scenarios. A scenario is a set of commands to execute. Unlike groups, a scenario can execute different methods on different devices. Another new feature was the support for transparent background on home screen widgets. Some have reported issues with widgets stuck in "Loading" and the only solution we've found so far has been to re-install the app.
+
+Pretty soon, there will be a new release including fixes and features regarding Schedules. You will now be able to pause/re-activate schedules and also remove schedules directly from the app. Remember that schedules is only supported for those of you with a <a href="http://telldus.com/products/tellstick_net">Tellstick Net</a>.
+
+You can always keep an eye on development by looking at the <a href="https://trello.com/board/remotestick/4f2f92f02e7ecf843fd68d9b">Remotestick Trello board</a>. By signing in with your Google account you can also vote for features. Suggesting new features that aren't already listed is done by sending an email to hello @ remotestick.org.
+
+Happy remoting!
