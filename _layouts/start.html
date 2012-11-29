@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Remotestick by pakerfeldt</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="/javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="googleplay"><a href="http://play.google.com/store/apps/details?id=org.remotestick">Download on Google Play</a></li>
+          <!--
+          <li class="downloads"><a href="#">ZIP</a></li>
+          <li class="downloads"><a href="#">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        -->
+        </nav>
+      </div><!-- end header -->
+
+      <div id="device">
+        <img src="images/device_sgn.png" />
+      </div>
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Remotestick</h1>
+          <p>Android client for Telldus Live!</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://twitter.com/pakerfeldt">pakerfeldt</a></span>
+          <span class="credits right">Hosted on GitHub Pages</span>
+        </div>
+        <div>
+        {% if page.backbutton == true %}
+          <div class="center"><a href="/index.html">Back</a></div>
+        {% endif %}
+        </div>
+        {{ content }}
+      </section>
+
+<section>
+         <div id="title">
+           <span class="credits left">hello @ remotestick.org</span>
+           <span class="credits right">Theme by mattgraham</span>
+          </div>
+</section>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9715280-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>
