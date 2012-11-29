@@ -861,3 +861,8 @@ section #title .credits.right {
     margin-top: 80px;
 }
 
+em {
+  font-weight: bold;
+  font-style: normal;
+}
+
