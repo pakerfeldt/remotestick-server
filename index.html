@@ -4,12 +4,11 @@ title: Remotestick
 ---
 
 <div id="home">
-	<p><h3>Remotestick</h3>
 	RemoteStick lets you remotely control lights and other electronics as well as monitor sensors from your phone. In order to use Remotestick you
   need a <a href="http://www.telldus.com">Tellstick</a>. <a href="/about.html">Read more about Remotestick and Tellstick</a>.
 	</p>
   <p>
-    <h4>Features</h4>
+    <h2>Features</h2>
     <ul>
       <li>Control lights, radiators or other electronics (called <em>devices</em>)</li>
       <lI>Add devices to <em>groups</em> for easier control</li>
@@ -23,7 +22,7 @@ title: Remotestick
 
     </ul>
   </p>
-  <h1>Recent news</h1>
+  <h2>Recent news</h2>
   <ul class="posts">
   	{% for post in site.categories.news limit:5 %}
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>  	
