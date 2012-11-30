@@ -23,11 +23,12 @@ title: Remotestick
 
     </ul>
   </p>
-  <h1>News</h1>
+  <h1>Recent news</h1>
   <ul class="posts">
   	{% for post in site.categories.news limit:5 %}
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>  	
   	{% endfor %}
-  </ul>    
+  </ul>
+  <p><a href="/archive.html">Archive</a></p>
 </div>
   
