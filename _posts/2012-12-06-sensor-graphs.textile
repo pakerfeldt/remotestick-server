@@ -8,7 +8,7 @@ setimage: true
 
 h2. {{ page.title }}
 
-The next big release, 2.5.0 is now being rolled out to Google Play. This includes a number of different features and bugfixes including the, by far, most requested one. Namely, logging of sensors and graph presentation. But what will probably be noticed first is the new look. I've changed font of almost all text and some colors have been changed as well. It is now harmonizing with the web site a lot more. Here's the complete change log and a screen shot.
+The next big release, 2.5.0 is now being rolled out to Google Play. This includes a number of different features and bugfixes including the, by far, most requested one. Namely, logging of sensors and graph presentation. But what will probably be noticed first is the new look. I've changed font of almost all text and some colors have been changed as well. It is now harmonizing with the web site a lot more. Here's the complete change log.
 
 h4. Changes
 * New slide in menu
