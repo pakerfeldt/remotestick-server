@@ -1,0 +1,27 @@
+---
+layout: post
+title: Sensor graphs and more
+category: news
+---
+
+h2. {{ page.title }}
+
+The next big release, 2.5.0 is now being rolled out to Google Play. This includes a number of different features and bugfixes including the, by far, most requested one. Namely, logging of sensors and graph presentation. But what will probably be noticed first is the new look. I've changed font of almost all text and some colors have been changed as well. It is now harmonizing with the web site a lot more. Here a screen shot of the new graph feature. Scroll down for a complete change log.
+
+<img src="/images/device-2.5.0.png" />
+
+h4. Changes
+* New slide in menu
+* New Sensors view with graphs
+* Support for pause/delete schedules
+* Export sensor values as variables to Tasker
+* New font and colors introduced
+* Warning symbols on stale sensors
+* Bugfix: Activating scenario does not update state of devices
+* Bugfix: Sunrise/sunset in schedules
+* Bugfix: Crashed when reading empty NFC tag
+* Bugfix: Missing page titles in tutorial
+* Bugfix: Crashed when accessing deleted group
+
+
+Happy remoting!
