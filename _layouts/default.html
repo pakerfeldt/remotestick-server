@@ -29,9 +29,9 @@
         </nav>
       </div><!-- end header -->
 
-      {% if setimage == true %}
+      {% if page.setimage == true %}
       <div id="device">
-        <img src="images/{% image %}" />
+        <img src="images/{{ page.image }}" />
       </div>
       {% endif %}
 
