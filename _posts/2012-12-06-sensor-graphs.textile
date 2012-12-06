@@ -2,6 +2,8 @@
 layout: post
 title: Sensor graphs and more
 category: news
+image: device-2.5.0.png
+setimage: true
 ---
 
 h2. {{ page.title }}
@@ -20,8 +22,5 @@ h4. Changes
 * Bugfix: Crashed when reading empty NFC tag
 * Bugfix: Missing page titles in tutorial
 * Bugfix: Crashed when accessing deleted group
-
-<img src="/images/device-2.5.0.png" />
-
 
 Happy remoting!
