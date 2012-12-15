@@ -10,7 +10,7 @@ h2. {{ page.title }}
 
 With the new release it's now possible to switch between temperature and humidity graphs if the sensor supports both. Two new graph types have been introduced as well. <em>Month</em> for last 30 days and <em>10 days min/max</em> which gives a range graph over the last ten days showing the min and max value for each day. See image on the left for an example of the <em>10 days min/max</em> graph.
 
-h4. Changes
+h4. Changes 2.5.3
 * New color on action bar icons
 * New graphs: Monthly and 10 days min/max
 * Support for switching between temperature and humidity graphs
