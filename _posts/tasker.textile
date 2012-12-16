@@ -1,0 +1,29 @@
+---
+layout: post
+title: Tasker
+category: article
+---
+
+h2. {{ page.title }}
+
+Remotestick has support for both Locale and Tasker although there's greater support for Tasker with variables.
+
+h4. Tasker variables
+From the Settings menu in Remotestick you can export variables to Tasker. You can export both sensor values and device states. Sensors and devices are polled at a regular interval which can be specified in Settings. The name of the exported variables are shown in the list when you choose to export a variable. 
+
+h5. Sensor variable
+Sensor variables are named %RS_ID_FIELD where ID is replaced by the id of the sensor and FIELD is replaced by the sensor name. The value of the variable corresponds to the last known value of that sensor. For example %RS_15422_TEMP = -8.5
+
+h5. Device variables
+Devices variables are named %RSD_ID where ID is replaced by the id of the device. The value of the variable corresponds to the last known state of the device. Valid states are:
+* 1 (On)
+* 2 (Off)
+* 4 (Bell)
+* 16 (Dim)
+* 128 (Up)
+* 256 (Down)
+* 512 (Stop)
+
+When the state is 16 a second variable is exported containing the dim value (0-100) in the variable %RSD_ID_VALUE
+
+

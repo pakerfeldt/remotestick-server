@@ -1,0 +1,14 @@
+---
+layout: post
+title: FAQ
+category: article
+---
+
+h2. {{ page.title }}
+
+h4. Question
+Answer
+
+h4. Question2
+Answer2
+
