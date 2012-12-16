@@ -8,6 +8,13 @@ title: Remotestick
   need a <a href="http://www.telldus.com">Tellstick</a>. <a href="/about.html">Read more about Remotestick and Tellstick</a>.
 	</p>
   <p>
+  <ul class="posts">
+    {% for post in site.categories.news limit:5 %}
+      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>    
+    {% endfor %}
+  </ul>
+  </p>
+  <p>
     <h2>Features</h2>
     <ul>
       <li>Control lights, radiators or other electronics (called <em>devices</em>)</li>
@@ -23,18 +30,12 @@ title: Remotestick
 
     </ul>
   </p>
-  <h2>Recent news</h2>
-  <ul class="posts">
-  	{% for post in site.categories.news limit:5 %}
-      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>  	
-  	{% endfor %}
-  </ul>
-  <p><a href="/archive.html">Older posts</a></p>
   <h2>Articles</h2>
   <ul class="posts">
     {% for post in site.categories.article limit:5 %}
       <li><a href="{{ post.url }}">{{ post.title }}</a></li>    
     {% endfor %}
   </ul>
+  <p><a href="/archive.html">Older posts</a></p>
 </div>
   
