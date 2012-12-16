@@ -6,9 +6,8 @@ category: article
 
 h2. {{ page.title }}
 
-h4. Question
-Answer
+<em>I can't login / authorize?</em>
+When you signed up on Telldus Live! you got a mail with a generated password. Use the e-mail address you provided together with this password. You must not use the Google password if you happened to sign up using your Google account. You must use the password that was given in the mail. Also, verify that you are able to login on http://live.telldus.com.
 
-h4. Question2
-Answer2
+
 
