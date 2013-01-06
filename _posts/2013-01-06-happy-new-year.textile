@@ -1,0 +1,46 @@
+---
+layout: post
+title: Happy new year!
+category: news
+---
+
+h2. {{ page.title }}
+
+Happy new year! And let's hope 2013 will be the year of home automation. 
+
+During the holidays I haven't had the time to focus on Remotestick that much. Nevertheless, there have been a couple of minor updates since last post, mostly bugfixes. Without further ado, here's the complete list since last time.
+
+h4. 2.5.11
+Possibility to edit scenarios
+Bugfix: Wrong date order in 10 days min/max graph
+Bugfix: Sometimes crashed diming from app widget
+
+h4. 2.5.10
+Bugfix: Fix crash when accessing menu to early.
+Bugfix: Solves issue on Android 2.2. Note that support for Android 2.2 might be deprecated in future releases.
+
+h4. 2.5.9
+Bugfix: Unable to authorize
+
+h4. 2.5.8
+Bugfix: Sometimes crashed when reading sensors in background
+
+h4. 2.5.7
+New permission: Read external storage. To be able to fetch floorplan images from external storage.
+Bugfix: Sometimes crashed when exporting tasker variables
+
+h4. 2.5.6
+Bugfix: Crash when sesnsor has long raw id
+Bugfix: Wrong month label in 10 days min/max
+Better error message when timestamp issue occurs
+
+h4. 2.5.5
+Bugfix: NPE introduced in 2.5.4
+
+h4. 2.5.4
+* Delayed execution of devices (long press to access)
+* Export device state as Tasker variables
+* Bugfix: Sort alphabetically in sensors table
+
+
+Happy remoting!
