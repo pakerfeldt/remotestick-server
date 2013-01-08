@@ -1,0 +1,13 @@
+---
+layout: post
+title: E-mail issues once again
+category: news
+---
+
+h2. {{ page.title }}
+
+Unfortunately I've had e-mail issues once again. If you've mailed me recently and haven't got a response, please mail me again!
+
+My hosting company re-directs mail from hello@remotestick.org to another address and for some reason this stopped working a couple of days ago. I have now completely transfered mail handling for remotestick.org to Google Apps and so mails have started dropping in again.
+
+Happy remoting!
