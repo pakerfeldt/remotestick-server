@@ -1,0 +1,13 @@
+---
+layout: post
+title: NFC tags for Nexus 4 and Nexus 10
+category: news
+---
+
+h2. {{ page.title }}
+
+I just got a batch from "tagsfordroid(Tagsfordroid)":http://tagsfordroid.com with NTAG203 tags and I can confirm that these works fine with Remotestick. They are also supported by Nexus 4 and Nexus 10 (which Mifare 1K are not). The difference between NTAG203 and Mifare 1K is that the latter has a lot more memory, 1024 bytes whereas NTAG203 has only 144 bytes. This should not be a problem as long as you don't need to control a lot of individual devices. Typically you can control 12 - 14 individual devices on a NTAG203. 
+
+So, if you're looking for NFC tags for Nexus 4 or Nexus 10 (or any other NFC supported device for that matter) I recommend you have a look at http://tagsfordroid.com. Shipping rates and delivery to Europe is reasonable. Expect at least 2 weeks for it to arrive though. I've ordered from tagsfordroid.com multiple times and haven't had any problems at all.
+
+Happy remoting!
