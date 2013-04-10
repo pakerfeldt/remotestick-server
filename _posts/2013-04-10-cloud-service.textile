@@ -1,0 +1,11 @@
+---
+layout: post
+title: Twitter account
+category: news
+---
+
+h2. {{ page.title }}
+
+There's now a separate Twitter account, "@remotestick(@remotestick)":http://twitter.com/remotestick. From here we will post updates, upcoming features and other information related to Remotestick. You are also free to ask questions through Twitter.
+
+Happy tweeting!
