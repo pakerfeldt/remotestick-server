@@ -1,11 +1,18 @@
 ---
 layout: post
-title: Twitter account
+title: Cloud service
 category: news
 ---
 
 h2. {{ page.title }}
 
-There's now a separate Twitter account, "@remotestick(@remotestick)":http://twitter.com/remotestick. From here we will post updates, upcoming features and other information related to Remotestick. You are also free to ask questions through Twitter.
+I've just started designing the Remotestick cloud service. The original purpose of this service was to handle the push notifications to devices (when Telldus supports it from their end). But obviously, this cloud service could deal with other things as well and I would be happy to hear your thoughts. If Remotestick was backed by an online cloud service, what features would you like to see? Here are some ideas besides push notifications.
 
-Happy tweeting!
+* Monitoring of sensors (no need to monitor from phone)
+* Scenarios, groups and floor plan synchronization (between devices)
+* Triggers
+
+Please share your thoughts, either by commenting below, send me an email or tweet to "@remotestick(@remotestick)":http://twitter.com/remotestick.
+
+
+Happy remoting!
