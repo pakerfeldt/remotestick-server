@@ -16,10 +16,10 @@ _Note: Remotestick does not explictly support any third party server. Please dir
 
 As long as the server mimics the Telldus Live! API Remotestick should not have any problem communicating with it. This includes using the same URL path (besides hostname and port obviously). 
 
-*Third party server that has been reported working with Remotestick*
+h3. Third party server that has been reported working with Remotestick
 
-* TellProx: https://github.com/p3tecracknell/tellprox
+* tellprox: "https://github.com/p3tecracknell/tellprox(https://github.com/p3tecracknell/tellprox)":https://github.com/p3tecracknell/tellprox
 
 h3. Accessing within a local network
 
-You might experience problems communicating with your server locally within your LAN when it's working outside your network. This is most likely due to how your router works when it tries to resolve the hostname. It might be possible to configure your router to handle this but it is outside of this article.
+You might experience problems communicating with your server locally within your LAN when it's working outside your network. This is most likely due to how your router works when it tries to resolve the hostname. It might be possible to configure your router to handle this but it is outside of this article.	
