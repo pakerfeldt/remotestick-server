@@ -1,0 +1,25 @@
+---
+layout: post
+title: Custom server
+category: article
+---
+
+h2. {{ page.title }}
+
+h3. Basics
+
+Since 2.6.0, Remotestick supports connection to a custom server (instead of using Telldus Live!). If a custom server is enabled, Remotestick will not try to connect to Telldus Live! but instead use that server. When Remotestick is first started you will get the option to either use Telldus Live! or your own server. If you already have Remotestick running but like to switch to a custom server, go into Settings and Custom Server. From there you will be able to specify hostname and port number to which Remotestick should connect. Currently, Remotestick is only using http (not https).
+
+h3. Custom servers
+
+_Note: Remotestick does not explictly support any third party server. Please direct questions related to a third party server to the community or the author of that software, not Remotestick._
+
+As long as the server mimics the Telldus Live! API Remotestick should not have any problem communicating with it. This includes using the same URL path (besides hostname and port obviously). 
+
+*Third party server that has been reported working with Remotestick*
+
+* TellProx: https://github.com/p3tecracknell/tellprox
+
+h3. Accessing within a local network
+
+You might experience problems communicating with your server locally within your LAN when it's working outside your network. This is most likely due to how your router works when it tries to resolve the hostname. It might be possible to configure your router to handle this but it is outside of this article.
