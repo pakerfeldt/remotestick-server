@@ -6,7 +6,7 @@ category: news
 
 h2. {{ page.title }}
 
-I started experimenting with a Facebook page for Remotestick as well. Not sure this is the forum people would want to interact with me and possible other Remotestick users but I'll give it a try at least.
+I started experimenting with a Facebook page for Remotestick as well. Not sure this is the forum people would want to interact with me and possibly other Remotestick users but we'll give it a try at least.
 
 Check it out and Like at "http://www.facebook.com/Remotestick":http://www.facebook.com/Remotestick
 
