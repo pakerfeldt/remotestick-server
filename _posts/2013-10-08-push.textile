@@ -1,0 +1,27 @@
+---
+layout: post
+title: Push support on halt
+category: news
+---
+
+h2. {{ page.title }}
+
+As many of you already know I started working on push support earlier this year and even went as far as having an alpha test out for a handful of people. Unfortunately, I have come to the conclusion to cancel the development of this feature and I will try to give you my take on this.
+
+First of, for those of you who don't know already. The Push feature would enable more or less instant feedback on devices state changes (and possibly sensors as well). This has several positive implications. You could for instance have a motion sensor to trigger events on the phone as soon as it trigger movements. It also affects battery consumption a lot less then having to regularly poll for changes. Polling (which is supported today) also has the negative drawback of not being instant. So there is no doubt that Push would be a really nice addition to Remotestick. 
+
+However.
+
+This add quite a bit of burden to me as I, all of a sudden, have to deal with a backend server on my own, running 24/7. Having to scale the solution when new users join in. Having a server running also costs a lot so I would somehow have to deal with payment and subscription to the service as well. I have already invested quite a few hours in this and sort of have a working solution already. But only for the actual push feature. Not for dealing with subscriptions etc. So I guess I would have to spend at least the same amount of hours in this feature before it's complete. 
+
+The decision to put the push feature on halt is threefold.
+
+*1. Complexity.* The solution is complex and adds a lot of new components for me to deal with. Something that I might not be able to support in the long run.
+
+*2. Uncertainty with Telldus.* The solution is dependent on a specific feature in the Telldus Live! API. There isn't really any guarantees that this feature will be kept for free or even remain at all.
+
+*3. Push support by Telldus.* The correct place to add this kind of feature is really directly in Telldus Live!. Not through a third party backend service. As a matter of fact, Telldus are planning on implementing push in their service. When this is due remains unknown. Also, they have said that this support will be for their own app only. Which means, that unless they add support for Tasker, you will still not be able to do advanced solutions around this feature. Hopefully they will somehow enable third party apps to piggy back on their implementation.
+
+Feel free to comment around this decision below. Also, reach out to Telldus about this feature and they might consider supporting third party apps as well (without us having to deal with a backend service on our own).
+
+Happy remoting!
