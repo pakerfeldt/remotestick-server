@@ -1,0 +1,12 @@
+---
+layout: post
+title: Short survey
+category: news
+---
+
+h2. {{ page.title }}
+
+If you're currently a Remotestick user I just want to reach out and ask for a little favor. 
+If you could take a few minutes to fill in this "feedback survey":https://goo.gl/forms/7g30rwQBpRgnSAwY2 I would be very happy. It's about the current state of Remotestick and how you envision the next Remotestick to be like.
+
+Happy remoting!
